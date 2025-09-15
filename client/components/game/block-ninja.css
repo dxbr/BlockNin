@@ -50,5 +50,5 @@ button:active::before { transform: scale(1, 1); opacity: 1; }
 
 /* Sword cursor for the whole game area */
 .block-ninja-root, .block-ninja-root #c {
-  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M3 29 L9 23' stroke='%23d4d4d4' stroke-width='3' stroke-linecap='round'/><path d='M9 23 L27 5' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/><path d='M24 6 L28 10' stroke='%23a0c4ff' stroke-width='2' stroke-linecap='round'/><circle cx='9' cy='23' r='3' fill='%23a78bfa'/></svg>") 26 6, crosshair;
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M2 2 L20 6 L26 12 L12 26 L6 20 Z' fill='%23e5e7eb' stroke='%23f8fafc' stroke-width='1'/><path d='M6 20 L12 26' stroke='%23a0c4ff' stroke-width='2' stroke-linecap='round'/><rect x='11.5' y='21' width='7' height='2.5' rx='0.5' fill='%23b45309'/><rect x='18' y='20' width='10' height='4.5' rx='1' fill='%23374151'/><circle cx='27.5' cy='22.25' r='1.5' fill='%239ca3af'/></svg>") 2 2, crosshair;
 }
