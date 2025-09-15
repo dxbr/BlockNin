@@ -1,62 +1,53 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import BlockNinja from "@/components/game/BlockNinja";
+import WalletConnect from "@/components/WalletConnect";
+import "@/components/game/block-ninja.css";
+import { getContract, connectWallet } from "@/lib/blockchain";
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
-  useEffect(() => {
-    fetchDemo();
-  }, []);
+  const [address, setAddress] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
+  useEffect(() => {
+    if (address) {
+      console.log("[nav] auto-start game after wallet connect");
     }
-  };
+  }, [address]);
+
+  async function submitScore(score: number) {
+    if (!address) return;
+    const confirmed = window.confirm(`Submit score ${score}?`);
+    if (!confirmed) return;
+    try {
+      console.log("[score] submit requested", score);
+      setSubmitting(true);
+      const { provider } = await connectWallet();
+      const signer = await provider.getSigner();
+      const contract = getContract(signer);
+      const tx = await contract.submitScore(BigInt(score));
+      await tx.wait();
+      console.log("[score] submitted");
+      alert("Score submitted!");
+    } catch (e: any) {
+      console.error("[score] submit failed", e);
+      alert(e?.message || "Failed to submit score");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
-      </div>
+    <div className="relative">
+      {!address ? (
+        <div className="block-ninja-gate">
+          <div className="text-center">
+            <WalletConnect onConnected={(addr) => setAddress(addr)} />
+          </div>
+        </div>
+      ) : (
+        <div className="status-badge text-emerald-400 font-medium">Wallet Connected</div>
+      )}
+      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} />
     </div>
   );
 }
