@@ -59,7 +59,7 @@ export default function Index() {
       ) : (
         <div className="status-badge text-emerald-400 font-medium">Wallet Connected</div>
       )}
-      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => { toast.success("Wallet Connected"); }} />
+      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => { toast.success("Wallet Connected"); }} onRequireWallet={() => toast("Connect your wallet to play")} />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
