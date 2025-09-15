@@ -4,9 +4,10 @@ export interface BlockNinjaProps {
   canPlay: boolean;
   onSubmitScore(score: number): Promise<void> | void;
   onAutoStart?: () => void;
+  onRequireWallet?: () => void;
 }
 
-export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart }: BlockNinjaProps) {
+export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequireWallet }: BlockNinjaProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
 
@@ -333,8 +334,8 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart }: Bloc
       renderMenus();
 
       // Button Actions
-      handleClick(root.querySelector('.play-normal-btn'), () => { if (!external.canPlay()) return; setGameMode(GAME_MODE_RANKED); setActiveMenu(null); resetGame(); });
-      handleClick(root.querySelector('.play-casual-btn'), () => { if (!external.canPlay()) return; setGameMode(GAME_MODE_CASUAL); setActiveMenu(null); resetGame(); });
+      handleClick(root.querySelector('.play-normal-btn'), () => { if (!external.canPlay()) { external.requireWallet(); return; } setGameMode(GAME_MODE_RANKED); setActiveMenu(null); resetGame(); });
+      handleClick(root.querySelector('.play-casual-btn'), () => { if (!external.canPlay()) { external.requireWallet(); return; } setGameMode(GAME_MODE_CASUAL); setActiveMenu(null); resetGame(); });
       handleClick(root.querySelector('.resume-btn'), () => resumeGame());
       handleClick(root.querySelector('.menu-btn--pause'), () => setActiveMenu(MENU_MAIN));
       handleClick(root.querySelector('.play-again-btn'), () => { setActiveMenu(null); resetGame(); });
@@ -433,6 +434,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart }: Bloc
 
       const external = {
         canPlay: () => canPlay,
+        requireWallet: () => { onRequireWallet && onRequireWallet(); },
         submitScore: (score: number) => { onSubmitScore(score); },
         startIfReady: () => {
           if (canPlay && !startedRef.current) {
