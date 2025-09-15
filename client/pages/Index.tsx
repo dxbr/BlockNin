@@ -56,10 +56,8 @@ export default function Index() {
             <WalletConnect onConnected={(addr) => { setAddress(addr); }} />
           </div>
         </div>
-      ) : (
-        <div className="status-badge text-emerald-400 font-medium">Wallet Connected</div>
-      )}
-      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => { toast.success("Wallet Connected"); }} onRequireWallet={() => toast("Connect your wallet to play")} />
+      ) : null}
+      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} onRequireWallet={() => toast("Connect your wallet to play")} />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
