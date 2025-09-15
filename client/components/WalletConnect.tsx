@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { connectWallet } from "@/lib/blockchain";
+import { toast } from "sonner";
 
 export interface WalletConnectProps {
   onConnected(address: string): void;
@@ -19,10 +20,13 @@ export default function WalletConnect({ onConnected }: WalletConnectProps) {
       setConnecting(true);
       const { address } = await connectWallet();
       setConnectedAddr(address);
+      toast.success("Wallet Connected", { description: address });
       onConnected(address);
     } catch (e: any) {
       console.error("[wallet] connect error", e);
-      setError(e?.message || "Failed to connect");
+      const msg = e?.message || "Failed to connect";
+      setError(msg);
+      toast.error("Connection failed", { description: msg });
     } finally {
       setConnecting(false);
     }
