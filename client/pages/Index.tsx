@@ -1,12 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import BlockNinja from "@/components/game/BlockNinja";
 import WalletConnect from "@/components/WalletConnect";
 import "@/components/game/block-ninja.css";
 import { getContract, connectWallet } from "@/lib/blockchain";
+import { toast } from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function Index() {
   const [address, setAddress] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingScore, setPendingScore] = useState<number | null>(null);
 
   useEffect(() => {
     if (address) {
@@ -16,23 +20,30 @@ export default function Index() {
 
   async function submitScore(score: number) {
     if (!address) return;
-    const confirmed = window.confirm(`Submit score ${score}?`);
-    if (!confirmed) return;
+    setPendingScore(score);
+    setConfirmOpen(true);
+  }
+
+  async function confirmSubmit() {
+    if (!address || pendingScore == null) return;
     try {
-      console.log("[score] submit requested", score);
+      console.log("[score] submit requested", pendingScore);
       setSubmitting(true);
+      setConfirmOpen(false);
       const { provider } = await connectWallet();
       const signer = await provider.getSigner();
       const contract = getContract(signer);
-      const tx = await contract.submitScore(BigInt(score));
+      const tx = await contract.submitScore(BigInt(pendingScore));
+      toast("Submitting score…");
       await tx.wait();
       console.log("[score] submitted");
-      alert("Score submitted!");
+      toast.success("Score submitted");
     } catch (e: any) {
       console.error("[score] submit failed", e);
-      alert(e?.message || "Failed to submit score");
+      toast.error("Submit failed", { description: e?.message || "Failed to submit score" });
     } finally {
       setSubmitting(false);
+      setPendingScore(null);
     }
   }
 
@@ -40,14 +51,30 @@ export default function Index() {
     <div className="relative">
       {!address ? (
         <div className="block-ninja-gate">
-          <div className="text-center">
-            <WalletConnect onConnected={(addr) => setAddress(addr)} />
+          <div className="text-center space-y-4">
+            <div className="text-white/80 text-lg">Connect your wallet to play</div>
+            <WalletConnect onConnected={(addr) => { setAddress(addr); }} />
           </div>
         </div>
       ) : (
         <div className="status-badge text-emerald-400 font-medium">Wallet Connected</div>
       )}
-      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} />
+      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => { toast.success("Wallet Connected"); }} />
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Submit Score</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingScore != null ? `Do you want to submit your score of ${pendingScore}?` : ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmSubmit} disabled={submitting}>Submit</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
