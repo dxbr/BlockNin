@@ -5,9 +5,10 @@ export interface BlockNinjaProps {
   onSubmitScore(score: number): Promise<void> | void;
   onAutoStart?: () => void;
   onRequireWallet?: () => void;
+  onOpenLeaderboard?: () => void;
 }
 
-export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequireWallet }: BlockNinjaProps) {
+export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequireWallet, onOpenLeaderboard }: BlockNinjaProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
 
@@ -359,6 +360,8 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       handleClick(root.querySelector('.play-again-btn'), () => { setActiveMenu(null); resetGame(); });
       handleClick(root.querySelector('.menu-btn--score'), () => setActiveMenu(MENU_MAIN));
       handleClick(root.querySelector('.submit-score-btn'), () => { external.submitScore(state.game.score); });
+      handleClick(root.querySelector('.menu--main .leaderboard-btn'), () => external.openLeaderboard());
+      handleClick(root.querySelector('.menu--score .leaderboard-btn'), () => external.openLeaderboard());
 
       function setActiveMenu(menu: any) { state.menus.active = menu; renderMenus(); }
       function setScore(score: number) { state.game.score = score; renderScoreHud(); }
@@ -454,6 +457,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         canPlay: () => canPlay,
         requireWallet: () => { onRequireWallet && onRequireWallet(); },
         submitScore: (score: number) => { onSubmitScore(score); },
+        openLeaderboard: () => { onOpenLeaderboard && onOpenLeaderboard(); },
         startIfReady: () => {
           if (canPlay && !startedRef.current) {
             startedRef.current = true;
@@ -494,6 +498,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
           <h1>Block Ninja</h1>
           <button type="button" className="play-normal-btn">PLAY GAME</button>
           <button type="button" className="play-casual-btn">CASUAL MODE</button>
+          <button type="button" className="leaderboard-btn">LEADERBOARD</button>
         </div>
         <div className="menu menu--pause">
           <h1>Paused</h1>
@@ -508,6 +513,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
           <button type="button" className="play-again-btn">PLAY AGAIN</button>
           <button type="button" className="menu-btn--score">MAIN MENU</button>
           <button type="button" className="submit-score-btn">SUBMIT SCORE</button>
+          <button type="button" className="leaderboard-btn">LEADERBOARD</button>
         </div>
       </div>
     </div>
