@@ -340,8 +340,8 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
               }
               showMenu(menuScoreNode);
             } else {
-              state.menus.active = MENU_MAIN;
-              showMenu(menuMainNode);
+              // Ignore spurious score menu requests while playing
+              state.menus.active = null;
             }
             break;
         }
@@ -494,7 +494,6 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
           <h1>Block Ninja</h1>
           <button type="button" className="play-normal-btn">PLAY GAME</button>
           <button type="button" className="play-casual-btn">CASUAL MODE</button>
-          <div className="credits">A game by Ishaan Sharma</div>
         </div>
         <div className="menu menu--pause">
           <h1>Paused</h1>
