@@ -20,5 +20,8 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
+  // RPC proxy (avoids browser CORS limits against Abstract RPC)
+  app.post("/api/abs-rpc", handleAbsRpc);
+
   return app;
 }
