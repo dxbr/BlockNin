@@ -16,8 +16,17 @@ export default function Leaderboard() {
       try {
         const provider = getReadProvider();
         const contract = getContract(provider);
-        const top = (await contract.getTopScores(100)) as Entry[];
-        setRows(top);
+        const top = (await contract.getTopScores(1000)) as Entry[];
+        const map = new Map<string, Entry>();
+        for (const e of top) {
+          const addr = e.player.toLowerCase();
+          const existing = map.get(addr);
+          if (!existing || e.score > existing.score) {
+            map.set(addr, e);
+          }
+        }
+        const unique = Array.from(map.values()).sort((a,b) => Number(b.score - a.score));
+        setRows(unique);
       } catch (e: any) {
         setError(e?.message || "Failed to load leaderboard");
       } finally {
