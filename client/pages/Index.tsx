@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function Index() {
   const [address, setAddress] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingScore, setPendingScore] = useState<number | null>(null);
 
@@ -58,7 +59,7 @@ export default function Index() {
           </div>
         </div>
       ) : null}
-      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} onRequireWallet={() => toast("Connect your wallet to play")} />
+      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} onRequireWallet={() => toast("Connect your wallet to play")} onOpenLeaderboard={() => navigate('/leaderboard')} />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
