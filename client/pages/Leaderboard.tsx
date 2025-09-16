@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getContract, getReadProvider, LEADERBOARD_ADDRESS } from "@/lib/blockchain";
+import { getContract, getReadProvider } from "@/lib/blockchain";
+import { Link } from "react-router-dom";
 
 type Entry = { player: string; score: bigint; timestamp: bigint };
 
@@ -26,16 +27,18 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-white" style={{ backgroundColor: "#000", backgroundImage: "radial-gradient(ellipse at top, #335476 0%, #31506e 11.1%, #304b67 22.2%, #2f4760 33.3%, #2d4359 44.4%, #2c3f51 55.6%, #2a3a4a 66.7%, #293643 77.8%, #28323d 88.9%, #262e36 100%)" }}>
       <div className="max-w-3xl mx-auto px-6 py-10">
-        <h1 className="text-3xl font-bold mb-6">Leaderboard</h1>
-        <div className="text-sm text-muted-foreground mb-4">Contract: {LEADERBOARD_ADDRESS}</div>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Leaderboard</h1>
+          <Link to="/" className="text-white/90 hover:text-white underline-offset-4 hover:underline">Back</Link>
+        </div>
         {loading ? <div>Loading…</div> : null}
-        {error ? <div className="text-red-500">{error}</div> : null}
+        {error ? <div className="text-red-400">{error}</div> : null}
         {!loading && !error ? (
-          <div className="overflow-x-auto border rounded-md">
+          <div className="overflow-x-auto border border-white/10 rounded-md bg-black/20">
             <table className="w-full text-left">
-              <thead className="bg-muted/50">
+              <thead className="bg-white/5">
                 <tr>
                   <th className="px-4 py-2">#</th>
                   <th className="px-4 py-2">Player</th>
@@ -45,7 +48,7 @@ export default function Leaderboard() {
               </thead>
               <tbody>
                 {rows.map((r, i) => (
-                  <tr key={i} className="border-t">
+                  <tr key={i} className="border-t border-white/10">
                     <td className="px-4 py-2">{i+1}</td>
                     <td className="px-4 py-2 font-mono">{shorten(r.player)}</td>
                     <td className="px-4 py-2">{r.score.toString()}</td>
@@ -53,7 +56,7 @@ export default function Leaderboard() {
                   </tr>
                 ))}
                 {rows.length === 0 ? (
-                  <tr><td className="px-4 py-6 text-center text-muted-foreground" colSpan={4}>No scores yet</td></tr>
+                  <tr><td className="px-4 py-6 text-center text-white/60" colSpan={4}>No scores yet</td></tr>
                 ) : null}
               </tbody>
             </table>
