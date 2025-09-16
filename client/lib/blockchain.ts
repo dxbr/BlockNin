@@ -83,7 +83,8 @@ export async function connectWallet(): Promise<{ address: string; provider: Brow
 
 export function getReadProvider() {
   // Use server proxy to avoid CORS issues from browser
-  return new JsonRpcProvider("/api/abs-rpc");
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  return new JsonRpcProvider(`${origin}/api/abs-rpc`);
 }
 
 export function getContract<T extends any>(signerOrProvider: any) {
