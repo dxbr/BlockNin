@@ -91,6 +91,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         game: { mode: GAME_MODE_RANKED, time: 0, score: 0, cubeCount: 0 },
         menus: { active: MENU_MAIN },
       };
+      let gameOver = false;
 
       const isInGame = () => !state.menus.active;
       const isMenuVisible = () => !!state.menus.active;
@@ -323,9 +324,26 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       function renderMenus() {
         hideMenu(menuMainNode); hideMenu(menuPauseNode); hideMenu(menuScoreNode);
         switch (state.menus.active) {
-          case MENU_MAIN: showMenu(menuMainNode); break;
-          case MENU_PAUSE: showMenu(menuPauseNode); break;
-          case MENU_SCORE: (finalScoreLblNode as any).textContent = formatNumber(state.game.score); if (isNewHighScore()) { (highScoreLblNode as any).textContent = 'New High Score!'; } else { (highScoreLblNode as any).textContent = `High Score: ${formatNumber(getHighScore())}`; } showMenu(menuScoreNode); break;
+          case MENU_MAIN:
+            showMenu(menuMainNode);
+            break;
+          case MENU_PAUSE:
+            showMenu(menuPauseNode);
+            break;
+          case MENU_SCORE:
+            if (gameOver) {
+              (finalScoreLblNode as any).textContent = formatNumber(state.game.score);
+              if (isNewHighScore()) {
+                (highScoreLblNode as any).textContent = 'New High Score!';
+              } else {
+                (highScoreLblNode as any).textContent = `High Score: ${formatNumber(getHighScore())}`;
+              }
+              showMenu(menuScoreNode);
+            } else {
+              state.menus.active = MENU_MAIN;
+              showMenu(menuMainNode);
+            }
+            break;
         }
         (menuContainerNode as any).classList.toggle('has-active', isMenuVisible());
         (menuContainerNode as any).classList.toggle('interactive-mode', isMenuVisible() && pointerIsDown);
@@ -348,10 +366,10 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       function setCubeCount(count: number) { state.game.cubeCount = count; renderScoreHud(); }
       function incrementCubeCount(inc: number) { if (isInGame()) { state.game.cubeCount += inc; renderScoreHud(); } }
       function setGameMode(mode: any) { state.game.mode = mode; }
-      function resetGame() { resetAllTargets(); state.game.time = 0; resetAllCooldowns(); setScore(0); setCubeCount(0); spawnTime = getSpawnDelay(); }
+      function resetGame() { gameOver = false; resetAllTargets(); state.game.time = 0; resetAllCooldowns(); setScore(0); setCubeCount(0); spawnTime = getSpawnDelay(); }
       function pauseGame() { isInGame() && setActiveMenu(MENU_PAUSE); }
       function resumeGame() { isPaused() && setActiveMenu(null); }
-      function endGame() { handleCanvasPointerUp(); if (isNewHighScore()) { setHighScore(state.game.score); } setActiveMenu(MENU_SCORE); }
+      function endGame() { handleCanvasPointerUp(); if (isNewHighScore()) { setHighScore(state.game.score); } gameOver = true; setActiveMenu(MENU_SCORE); }
       (window as any).addEventListener('keydown', (event: KeyboardEvent) => { if (event.key === 'p') { isPaused() ? resumeGame() : pauseGame(); } });
 
       let spawnTime = 0; const maxSpawnX = 450; const pointerDelta = { x: 0, y: 0 }; const pointerDeltaScaled = { x: 0, y: 0 };
