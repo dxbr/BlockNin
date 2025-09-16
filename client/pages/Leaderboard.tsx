@@ -12,7 +12,8 @@ export default function Leaderboard() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
+    let mounted = true;
+    const fetchScores = async () => {
       try {
         const provider = getReadProvider();
         const contract = getContract(provider);
@@ -21,18 +22,19 @@ export default function Leaderboard() {
         for (const e of top) {
           const addr = e.player.toLowerCase();
           const existing = map.get(addr);
-          if (!existing || e.score > existing.score) {
-            map.set(addr, e);
-          }
+          if (!existing || e.score > existing.score) map.set(addr, e);
         }
         const unique = Array.from(map.values()).sort((a,b) => Number(b.score - a.score));
-        setRows(unique);
+        if (mounted) setRows(unique);
       } catch (e: any) {
-        setError(e?.message || "Failed to load leaderboard");
+        if (mounted) setError(e?.message || "Failed to load leaderboard");
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
-    })();
+    };
+    fetchScores();
+    const id = setInterval(fetchScores, 5000);
+    return () => { mounted = false; clearInterval(id); };
   }, []);
 
   return (
