@@ -5,6 +5,7 @@ import "@/components/game/block-ninja.css";
 import { getContract, connectWallet } from "@/lib/blockchain";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
   const [address, setAddress] = useState<string | null>(null);
