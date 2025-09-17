@@ -28,7 +28,7 @@ body {
 .menus.has-active::before { opacity: 0.08; transition-duration: 0.4s; transition-timing-function: ease-out; }
 .menus.interactive-mode::before { opacity: 0.02; }
 .menu { pointer-events: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; user-select: none; text-align: center; color: rgba(255, 255, 255, 0.9); opacity: 0; visibility: hidden; transform: translateY(30px); transition-property: opacity, visibility, transform; transition-duration: 0.2s; transition-timing-function: ease-in; }
-.menu.active { opacity: 1; visibility: visible; transform: translateY(0); transition-duration: 0.4s; transition-timing-function: ease-out; }
+.menu.active { opacity: 1; visibility: visible; transform: translateY(0); transition-duration: 0.4s; transition-timing-function: ease-out; pointer-events: auto; }
 .menus.interactive-mode .menu.active { opacity: 0.6; }
 .menus:not(.interactive-mode) .menu.active > * { pointer-events: auto; }
 
