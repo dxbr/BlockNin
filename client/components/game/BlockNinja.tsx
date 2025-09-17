@@ -73,10 +73,9 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       const sfx = {
         ninja: new Audio('https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fc0296aa3558749399a985a84e757f968?alt=media&token=b26fbe7c-067a-41e8-83e3-de4db7c28967&apiKey=46bb7f1aa7e846bbae66fe2261f73473'),
         click: new Audio('https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fe9efecf4b5f84d81ac7139866c9e9e98?alt=media&token=4aaed14f-5b19-4fa4-aa07-079a4a5975d9&apiKey=46bb7f1aa7e846bbae66fe2261f73473'),
-        gameOver: new Audio('https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Ffe340764b0f14a4386cdd79180900bfc?alt=media&token=6f057d87-a75b-498d-8717-feaa909e8232&apiKey=46bb7f1aa7e846bbae66fe2261f73473'),
       } as const;
-      sfx.ninja.preload = 'auto'; sfx.click.preload = 'auto'; sfx.gameOver.preload = 'auto';
-      sfx.ninja.volume = 0.4; sfx.click.volume = 0.3; sfx.gameOver.volume = 0.6;
+      sfx.ninja.preload = 'auto'; sfx.click.preload = 'auto';
+      sfx.ninja.volume = 0.4; sfx.click.volume = 0.3;
       const playSound = (a: HTMLAudioElement) => { try { a.currentTime = 0; void a.play(); } catch (_) {} };
 
       // 3D camera config
@@ -361,6 +360,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         (menuContainerNode as any).classList.toggle('has-active', isMenuVisible());
         (menuContainerNode as any).classList.toggle('interactive-mode', isMenuVisible() && pointerIsDown);
         setHudVisibility(!isMenuVisible());
+        (canvas as any).style.pointerEvents = isMenuVisible() ? 'none' : 'auto';
       }
       renderMenus();
 
@@ -384,7 +384,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       function resetGame() { gameOver = false; resetAllTargets(); state.game.time = 0; resetAllCooldowns(); setScore(0); setCubeCount(0); spawnTime = getSpawnDelay(); }
       function pauseGame() { isInGame() && setActiveMenu(MENU_PAUSE); }
       function resumeGame() { isPaused() && setActiveMenu(null); }
-      function endGame() { handleCanvasPointerUp(); if (isNewHighScore()) { setHighScore(state.game.score); } gameOver = true; playSound(sfx.gameOver); setActiveMenu(MENU_SCORE); }
+      function endGame() { handleCanvasPointerUp(); if (isNewHighScore()) { setHighScore(state.game.score); } gameOver = true; setActiveMenu(MENU_SCORE); }
       (window as any).addEventListener('keydown', (event: KeyboardEvent) => { if (event.key === 'p') { isPaused() ? resumeGame() : pauseGame(); } });
 
       let spawnTime = 0; const maxSpawnX = 450; const pointerDelta = { x: 0, y: 0 }; const pointerDeltaScaled = { x: 0, y: 0 };
@@ -416,7 +416,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
           if (target.x < leftBound) { target.x = leftBound; target.xD *= -boundDamping; } else if (target.x > rightBound) { target.x = rightBound; target.xD *= -boundDamping; }
           if (target.z < backboardZ) { target.z = backboardZ; target.zD *= -boundDamping; }
           target.yD += gravity * simSpeed; target.rotateX += target.rotateXD * simSpeed; target.rotateY += target.rotateYD * simSpeed; target.rotateZ += target.rotateZD * simSpeed; target.transform(); target.project();
-          if (target.y > centerY + targetHitRadius * 2) { targets.splice(i, 1); returnTarget(target); if (isInGame()) { if (isCasualGame()) { incrementScore(-25); } else { endGame(); } } continue; }
+          if (target.y > centerY + targetHitRadius * 2) { targets.splice(i, 1); returnTarget(target); if (isInGame()) { endGame(); } continue; }
           const hitTestCount = Math.ceil(pointerSpeed / targetRadius * 2);
           for (let ii=1; ii<=hitTestCount; ii++) { const percent = 1 - (ii / hitTestCount); const hitX = pointerScene.x - pointerDelta.x * percent; const hitY = pointerScene.y - pointerDelta.y * percent; const distance = Math.hypot(hitX - (target.projected as any).x, hitY - (target.projected as any).y); if (distance <= targetHitRadius) { if (!target.hit) { target.hit = true; target.xD += pointerDeltaScaled.x * hitDampening; target.yD += pointerDeltaScaled.y * hitDampening; target.rotateXD += pointerDeltaScaled.y * 0.001; target.rotateYD += pointerDeltaScaled.x * 0.001; const sparkSpeed = 7 + pointerSpeedScaled * 0.125; if (pointerSpeedScaled > minPointerSpeed) { target.health--; incrementScore(10); playSound(sfx.ninja); if (target.health <= 0) { incrementCubeCount(1); createBurst(target, forceMultiplier); sparkBurst(hitX, hitY, 8, sparkSpeed); if (target.wireframe) { slowmoRemaining = slowmoDuration; spawnTime = 0; spawnExtra = 2; } targets.splice(i, 1); returnTarget(target); } else { sparkBurst(hitX, hitY, 8, sparkSpeed); glueShedSparks(target); updateTargetHealth(target, 0); } } else { incrementScore(5); playSound(sfx.ninja); sparkBurst(hitX, hitY, 3, sparkSpeed); } } continue targetLoop; } }
           target.hit = false;
@@ -452,7 +452,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         const raf = () => requestAnimationFrame(frameHandler); raf();
       }
 
-      function handleCanvasPointerDown(x: number, y: number) { if (!pointerIsDown) { pointerIsDown = true; (pointerScreen as any).x = x; (pointerScreen as any).y = y; playSound(sfx.click); if (isMenuVisible()) renderMenus(); } }
+      function handleCanvasPointerDown(x: number, y: number) { if (isMenuVisible()) { return; } if (!pointerIsDown) { pointerIsDown = true; (pointerScreen as any).x = x; (pointerScreen as any).y = y; playSound(sfx.click); } }
       function handleCanvasPointerUp() { if (pointerIsDown) { pointerIsDown = false; touchPoints.push({ touchBreak: true, life: touchPointLife }); if (isMenuVisible()) renderMenus(); } }
       function handleCanvasPointerMove(x: number, y: number) { if (pointerIsDown) { (pointerScreen as any).x = x; (pointerScreen as any).y = y; } }
       if ('PointerEvent' in window) {
