@@ -303,7 +303,9 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
       const scoreNode = $('.score-lbl');
       const cubeCountNode = $('.cube-count-lbl');
       function renderScoreHud() {
-        if (isCasualGame()) { (scoreNode as any).style.display = 'none'; (cubeCountNode as any).style.opacity = 1; } else { (scoreNode as any).innerText = `SCORE: ${state.game.score}`; (scoreNode as any).style.display = 'block'; (cubeCountNode as any).style.opacity = 0.65; }
+        (scoreNode as any).innerText = `SCORE: ${state.game.score}`;
+        (scoreNode as any).style.display = 'block';
+        (cubeCountNode as any).style.opacity = isCasualGame() ? 1 : 0.65;
         (cubeCountNode as any).innerText = `CUBES SMASHED: ${state.game.cubeCount}`;
       }
       renderScoreHud();
