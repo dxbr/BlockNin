@@ -408,7 +408,7 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         while (touchPoints[0] && (touchPoints[0] as any).life <= 0) { touchPoints.shift(); }
         PERF_START('entities');
         spawnTime -= simTime;
-        if (spawnTime <= 0) { if (spawnExtra > 0) { spawnExtra--; spawnTime = spawnExtraDelay; } else { spawnTime = getSpawnDelay(); } const target = getTarget(); const spawnRadius = Math.min(centerX * 0.8, maxSpawnX); target.x = (Math.random() * spawnRadius * 2 - spawnRadius); target.y = centerY + targetHitRadius * 2; target.z = (Math.random() * targetRadius*2 - targetRadius); target.xD = Math.random() * (target.x * -2 / 120); target.yD = -20; targets.push(target); }
+        if (spawnTime <= 0) { if (spawnExtra > 0) { spawnExtra--; spawnTime = spawnExtraDelay; } else { spawnTime = getSpawnDelay(); } const target = getTarget(); const spawnRadius = Math.min(centerX * 0.8, maxSpawnX); target.x = (Math.random() * spawnRadius * 2 - spawnRadius); target.y = centerY + targetHitRadius * 2; target.z = (Math.random() * targetRadius*2 - targetRadius); target.xD = Math.random() * (target.x * -2 / 120); target.yD = -20; (target as any).hasPeaked = false; targets.push(target); }
         const leftBound = -centerX + targetRadius; const rightBound = centerX - targetRadius; const ceiling = -centerY - 120; const boundDamping = 0.4;
         targetLoop: for (let i = targets.length - 1; i >= 0; i--) {
           const target = targets[i]; target.x += target.xD * simSpeed; target.y += target.yD * simSpeed;
