@@ -18,13 +18,19 @@ export default function Leaderboard() {
         const provider = getReadProvider();
         const contract = getContract(provider);
         const top = (await contract.getTopScores(1000)) as Entry[];
-        const map = new Map<string, Entry>();
+        // Sum all scores per unique player address
+        const totals = new Map<string, Entry>();
         for (const e of top) {
           const addr = e.player.toLowerCase();
-          const existing = map.get(addr);
-          if (!existing || e.score > existing.score) map.set(addr, e);
+          const prev = totals.get(addr);
+          if (prev) {
+            const sum = prev.score + e.score;
+            totals.set(addr, { player: e.player, score: sum, timestamp: e.timestamp > prev.timestamp ? e.timestamp : prev.timestamp });
+          } else {
+            totals.set(addr, { player: e.player, score: e.score, timestamp: e.timestamp });
+          }
         }
-        const unique = Array.from(map.values()).sort((a,b) => Number(b.score - a.score));
+        const unique = Array.from(totals.values()).sort((a,b) => Number(b.score - a.score));
         if (mounted) setRows(unique);
       } catch (e: any) {
         if (mounted) setError(e?.message || "Failed to load leaderboard");
