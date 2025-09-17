@@ -432,8 +432,8 @@ export default function BlockNinja({ canPlay, onSubmitScore, onAutoStart, onRequ
         let lastTimestamp = 0;
         function frameHandler(timestamp: number) {
           let frameTime = timestamp - lastTimestamp; lastTimestamp = timestamp; raf();
-          if (!isPaused() && state.menus.active === MENU_MAIN) { setActiveMenu(null); }
-          if (isPaused() || state.menus.active === MENU_SCORE) return;
+          // Halt updates when any menu is visible (main, pause, or score)
+          if (isMenuVisible()) return;
           if (frameTime < 0) { frameTime = 17; } else if (frameTime > 68) { frameTime = 68; }
           const halfW = width / 2; const halfH = height / 2; pointerScene.x = (pointerScreen.x as any) / viewScale - halfW; pointerScene.y = (pointerScreen.y as any) / viewScale - halfH; const lag = frameTime / 16.6667; const simTime = gameSpeed * frameTime; const simSpeed = gameSpeed * lag; tick(width, height, simTime, simSpeed, lag); ctx.clearRect(0, 0, canvas.width, canvas.height); const drawScale = dpr * viewScale; ctx.scale(drawScale, drawScale); ctx.translate(halfW, halfH); draw(ctx, width, height, viewScale); ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
