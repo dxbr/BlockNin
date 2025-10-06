@@ -41,8 +41,18 @@ export default function Index() {
       console.log("[score] submitted");
       toast.success("Score submitted");
     } catch (e: any) {
-      console.error("[score] submit failed", e);
-      toast.error("Submit failed", { description: e?.message || "Failed to submit score" });
+      const code: number | undefined = e?.code ?? e?.info?.error?.code;
+      const message: string = e?.message || String(e);
+      const rejected =
+        code === 4001 ||
+        /user rejected/i.test(message) ||
+        /denied transaction/i.test(message);
+      if (rejected) {
+        toast("Transaction rejected");
+      } else {
+        console.error("[score] submit failed", e);
+        toast.error("Submit failed", { description: message || "Failed to submit score" });
+      }
     } finally {
       setSubmitting(false);
       setPendingScore(null);
