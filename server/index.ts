@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleBaseRpc } from "./routes/abs-rpc";
+import { handleBaseRpc } from "./routes/base-rpc";
 
 export function createServer() {
   const app = express();
