@@ -1,5 +1,5 @@
 /**
-*Submitted for verification at abscan.org on 2025-09-15
+*Submitted for verification at base.blockscout.com on 2025-09-15
 */
 
 // SPDX-License-Identifier: MIT
@@ -7,7 +7,7 @@ pragma solidity ^0.8.19;
 
 /**
 * @title Block Ninja Leaderboard
-* @dev Smart contract to store and manage Block Ninja game scores on Abstract Mainnet
+* @dev Smart contract to store and manage Block Ninja game scores on Base Mainnet
 */
 contract Leaderboard {
    struct ScoreEntry {
