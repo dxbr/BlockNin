@@ -1,10 +1,10 @@
 import type { RequestHandler } from "express";
 
-const ABSTRACT_RPC = "https://api.mainnet.abs.xyz";
+const BASE_RPC = "https://mainnet.base.org";
 
-export const handleAbsRpc: RequestHandler = async (req, res) => {
+export const handleBaseRpc: RequestHandler = async (req, res) => {
   try {
-    const upstream = await fetch(ABSTRACT_RPC, {
+    const upstream = await fetch(BASE_RPC, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(req.body),
