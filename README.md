@@ -60,7 +60,7 @@ pnpm build       # Production client + server bundles
 
 - Contract address: `0x7B21Ae885942643CAb67E87AA0C427c12B40946D` (Base mainnet).
 - The client uses `connectWallet()` to ensure the Base chain is added and selected before play.
-- `getReadProvider()` talks to `/api/base-rpc`, which proxies JSON-RPC traffic to `https://mainnet.base.org` via `server/routes/abs-rpc.ts`.
+- `getReadProvider()` talks to `/api/base-rpc`, which proxies JSON-RPC traffic to `https://mainnet.base.org` via `server/routes/base-rpc.ts`.
 - Scores are summed across multiple submissions per address before rendering in the leaderboard page.
 
 ## Project Structure
