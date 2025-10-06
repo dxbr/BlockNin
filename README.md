@@ -5,17 +5,17 @@ Block Ninja is a fast-paced slicing game where players cut cascading blocks, cha
 ## Features
 
 - **Precision canvas gameplay** with tuned physics, miss detection, slow-motion meter, and responsive pointer support.
-- **Wallet-gated sessions** that blur the background until an Abstract-compatible wallet connects, preventing unintended interactions.
+- **Wallet-gated sessions** that blur the background until a Base-compatible wallet connects, preventing unintended interactions.
 - **On-chain leaderboard** backed by an EVM smart contract that aggregates every submitted score per player.
 - **Audio feedback** using Builder-hosted `Ninja.mp3` and `MouseClick.wav` clips to punctuate block hits and UI interactions.
 - **Polished UI overlays** for start, pause, scoreboard, and submission flows, with menus fully blocking gameplay when active.
-- **Express proxy** that relays RPC calls to the Abstract network, avoiding browser CORS issues.
+- **Express proxy** that relays RPC calls to the Base network, avoiding browser CORS issues.
 
 ## Tech Stack
 
 - **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Radix UI primitives.
 - **Rendering:** Custom canvas/WebGL loop orchestrated inside `BlockNinja.tsx`.
-- **Blockchain:** `ethers` v6 with an Abstract mainnet contract (`Leaderboard.sol`).
+- **Blockchain:** `ethers` v6 with a Base mainnet contract (`Leaderboard.sol`).
 - **Backend:** Express server co-located with the Vite build for proxying blockchain requests.
 - **Tooling:** pnpm, Vitest, TypeScript strict mode, PostCSS, Tailwind Merge.
 
@@ -50,7 +50,7 @@ pnpm build       # Production client + server bundles
 
 ## Gameplay Overview
 
-1. Players connect an injected Abstract-compatible wallet (MetaMask, OKX, etc.).
+1. Players connect an injected Base-compatible wallet (MetaMask, OKX, etc.).
 2. The gate overlay disappears, revealing the Block Ninja canvas and HUD.
 3. Slice falling blocks to increase the score and build combos; missing a peaked block ends the run.
 4. Submit the final score to the `Leaderboard` contract. A confirmation dialog protects against accidental submissions.
@@ -58,9 +58,9 @@ pnpm build       # Production client + server bundles
 
 ## Smart Contract & Blockchain Integration
 
-- Contract address: `0x8D31202eadF93139838b993a4BA557724Fb3D0c4` (Abstract mainnet).
-- The client uses `connectWallet()` to ensure the Abstract chain is added and selected before play.
-- `getReadProvider()` talks to `/api/abs-rpc`, which proxies JSON-RPC traffic to `https://api.mainnet.abs.xyz` via `server/routes/abs-rpc.ts`.
+- Contract address: `0x7B21Ae885942643CAb67E87AA0C427c12B40946D` (Base mainnet).
+- The client uses `connectWallet()` to ensure the Base chain is added and selected before play.
+- `getReadProvider()` talks to `/api/base-rpc`, which proxies JSON-RPC traffic to `https://mainnet.base.org` via `server/routes/abs-rpc.ts`.
 - Scores are summed across multiple submissions per address before rendering in the leaderboard page.
 
 ## Project Structure
@@ -73,7 +73,7 @@ client/
   lib/               Blockchain utilities and helpers
   pages/             SPA routes (home, leaderboard, 404)
 server/
-  routes/            Express handlers, including Abstract RPC proxy
+  routes/            Express handlers, including Base RPC proxy
 shared/              Types shared between client and server
 contracts/           Solidity source for the leaderboard contract
 netlify/functions/   Serverless adapter for deployment
