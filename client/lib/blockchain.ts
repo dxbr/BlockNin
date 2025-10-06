@@ -1,29 +1,132 @@
 import { BrowserProvider, Contract, JsonRpcProvider } from "ethers";
 
-export const ABSTRACT = {
-  chainId: 2741,
-  chainIdHex: "0xAB5",
-  name: "Abstract",
-  rpcUrl: "https://api.mainnet.abs.xyz",
+export const BASE = {
+  chainId: 8453,
+  chainIdHex: "0x2105",
+  name: "Base",
+  rpcUrl: "https://mainnet.base.org",
   currency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  explorer: "https://abscan.org/",
-};
+  explorer: "https://base.blockscout.com/",
+} as const;
 
-export const LEADERBOARD_ADDRESS = "0x8D31202eadF93139838b993a4BA557724Fb3D0c4" as const;
+export const LEADERBOARD_ADDRESS = "0x7B21Ae885942643CAb67E87AA0C427c12B40946D" as const;
 
 export const LEADERBOARD_ABI = [
-  { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "player", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "score", "type": "uint256" }], "name": "NewHighScore", "type": "event" },
-  { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "player", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "score", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256" }], "name": "ScoreSubmitted", "type": "event" },
-  { "inputs": [], "name": "getGlobalHighScore", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "address", "name": "player", "type": "address" }], "name": "getPlayerBestScore", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "address", "name": "player", "type": "address" }], "name": "getPlayerScores", "outputs": [{ "components": [{ "internalType": "address", "name": "player", "type": "address" }, { "internalType": "uint256", "name": "score", "type": "uint256" }, { "internalType": "uint256", "name": "timestamp", "type": "uint256" }], "internalType": "struct Leaderboard.ScoreEntry[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "address", "name": "player", "type": "address" }], "name": "getPlayerTotalGames", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "uint256", "name": "limit", "type": "uint256" }], "name": "getTopScores", "outputs": [{ "components": [{ "internalType": "address", "name": "player", "type": "address" }, { "internalType": "uint256", "name": "score", "type": "uint256" }, { "internalType": "uint256", "name": "timestamp", "type": "uint256" }], "internalType": "struct Leaderboard.ScoreEntry[]", "name": "", "type": "tuple[]" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [], "name": "getTotalScores", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "playerBestScore", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "playerTotalGames", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "scores", "outputs": [{ "internalType": "address", "name": "player", "type": "address" }, { "internalType": "uint256", "name": "score", "type": "uint256" }, { "internalType": "uint256", "name": "timestamp", "type": "uint256" }], "stateMutability": "view", "type": "function" },
-  { "inputs": [{ "internalType": "uint256", "name": "score", "type": "uint256" }], "name": "submitScore", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "player", type: "address" },
+      { indexed: false, internalType: "uint256", name: "score", type: "uint256" },
+    ],
+    name: "NewHighScore",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "player", type: "address" },
+      { indexed: false, internalType: "uint256", name: "score", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
+    ],
+    name: "ScoreSubmitted",
+    type: "event",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "score", type: "uint256" }],
+    name: "submitScore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getGlobalHighScore",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "player", type: "address" }],
+    name: "getPlayerBestScore",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "player", type: "address" }],
+    name: "getPlayerScores",
+    outputs: [
+      {
+        components: [
+          { internalType: "address", name: "player", type: "address" },
+          { internalType: "uint256", name: "score", type: "uint256" },
+          { internalType: "uint256", name: "timestamp", type: "uint256" },
+        ],
+        internalType: "struct Leaderboard.ScoreEntry[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "player", type: "address" }],
+    name: "getPlayerTotalGames",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "limit", type: "uint256" }],
+    name: "getTopScores",
+    outputs: [
+      {
+        components: [
+          { internalType: "address", name: "player", type: "address" },
+          { internalType: "uint256", name: "score", type: "uint256" },
+          { internalType: "uint256", name: "timestamp", type: "uint256" },
+        ],
+        internalType: "struct Leaderboard.ScoreEntry[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTotalScores",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "playerBestScore",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "playerTotalGames",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "scores",
+    outputs: [
+      { internalType: "address", name: "player", type: "address" },
+      { internalType: "uint256", name: "score", type: "uint256" },
+      { internalType: "uint256", name: "timestamp", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
 
 export type InjectedEthereum = (Window & typeof globalThis) & { ethereum?: any; okxwallet?: any };
@@ -32,7 +135,6 @@ export function detectInjectedProvider(): any | null {
   const w = window as InjectedEthereum;
   const { ethereum } = w;
   if (!ethereum) return w.okxwallet ?? null;
-  // Some wallets aggregate multiple providers
   const providers: any[] | undefined = (ethereum as any).providers;
   if (providers?.length) {
     const okx = providers.find((p) => p.isOkxWallet);
@@ -46,21 +148,23 @@ export function detectInjectedProvider(): any | null {
   return ethereum;
 }
 
-export async function ensureAbstractChain(provider: any) {
-  const chainIdHex = ABSTRACT.chainIdHex;
+export async function ensureBaseChain(provider: any) {
+  const chainIdHex = BASE.chainIdHex;
   try {
     await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: chainIdHex }] });
   } catch (err: any) {
     if (err?.code === 4902 || ("message" in err && String(err.message).includes("Unrecognized chain"))) {
       await provider.request({
         method: "wallet_addEthereumChain",
-        params: [{
-          chainId: chainIdHex,
-          chainName: ABSTRACT.name,
-          nativeCurrency: ABSTRACT.currency,
-          rpcUrls: [ABSTRACT.rpcUrl],
-          blockExplorerUrls: [ABSTRACT.explorer],
-        }],
+        params: [
+          {
+            chainId: chainIdHex,
+            chainName: BASE.name,
+            nativeCurrency: BASE.currency,
+            rpcUrls: [BASE.rpcUrl],
+            blockExplorerUrls: [BASE.explorer],
+          },
+        ],
       });
       await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: chainIdHex }] });
     } else {
@@ -69,11 +173,11 @@ export async function ensureAbstractChain(provider: any) {
   }
 }
 
-export async function connectWallet(): Promise<{ address: string; provider: BrowserProvider }>{
+export async function connectWallet(): Promise<{ address: string; provider: BrowserProvider }> {
   console.log("[wallet] connect init");
   const injected = detectInjectedProvider();
   if (!injected) throw new Error("No injected wallet found");
-  await ensureAbstractChain(injected);
+  await ensureBaseChain(injected);
   const browserProvider = new BrowserProvider(injected);
   const accounts: string[] = await injected.request({ method: "eth_requestAccounts" });
   const address = accounts[0];
@@ -82,9 +186,8 @@ export async function connectWallet(): Promise<{ address: string; provider: Brow
 }
 
 export function getReadProvider() {
-  // Use server proxy to avoid CORS issues from browser
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  return new JsonRpcProvider(`${origin}/api/abs-rpc`);
+  return new JsonRpcProvider(`${origin}/api/base-rpc`);
 }
 
 export function getContract<T extends any>(signerOrProvider: any) {
