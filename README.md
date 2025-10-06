@@ -3,6 +3,7 @@
 Block Ninja is a fast-paced slicing game where players cut cascading blocks, chase high scores, and compete on an on-chain leaderboard. The experience blends arcade gameplay with a wallet-gated flow, sound design, and a responsive interface built with modern web tooling.
 
 ## Features
+
 - **Precision canvas gameplay** with tuned physics, miss detection, slow-motion meter, and responsive pointer support.
 - **Wallet-gated sessions** that blur the background until an Abstract-compatible wallet connects, preventing unintended interactions.
 - **On-chain leaderboard** backed by an EVM smart contract that aggregates every submitted score per player.
@@ -11,6 +12,7 @@ Block Ninja is a fast-paced slicing game where players cut cascading blocks, cha
 - **Express proxy** that relays RPC calls to the Abstract network, avoiding browser CORS issues.
 
 ## Tech Stack
+
 - **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Radix UI primitives.
 - **Rendering:** Custom canvas/WebGL loop orchestrated inside `BlockNinja.tsx`.
 - **Blockchain:** `ethers` v6 with an Abstract mainnet contract (`Leaderboard.sol`).
@@ -18,22 +20,28 @@ Block Ninja is a fast-paced slicing game where players cut cascading blocks, cha
 - **Tooling:** pnpm, Vitest, TypeScript strict mode, PostCSS, Tailwind Merge.
 
 ## Getting Started
+
 ### Prerequisites
+
 - Node.js 18+
 - [pnpm](https://pnpm.io/) (preferred package manager for this template)
 
 ### Install dependencies
+
 ```bash
 pnpm install
 ```
 
 ### Run the development server
+
 ```bash
 pnpm dev
 ```
+
 This starts Vite (client) and the Express server on a single port with hot reload.
 
 ### Run tests and quality checks
+
 ```bash
 pnpm test        # Vitest test suite
 pnpm typecheck   # TypeScript diagnostics
@@ -41,6 +49,7 @@ pnpm build       # Production client + server bundles
 ```
 
 ## Gameplay Overview
+
 1. Players connect an injected Abstract-compatible wallet (MetaMask, OKX, etc.).
 2. The gate overlay disappears, revealing the Block Ninja canvas and HUD.
 3. Slice falling blocks to increase the score and build combos; missing a peaked block ends the run.
@@ -48,12 +57,14 @@ pnpm build       # Production client + server bundles
 5. Visit the `/leaderboard` route to view aggregated standings with real-time refresh.
 
 ## Smart Contract & Blockchain Integration
+
 - Contract address: `0x8D31202eadF93139838b993a4BA557724Fb3D0c4` (Abstract mainnet).
 - The client uses `connectWallet()` to ensure the Abstract chain is added and selected before play.
 - `getReadProvider()` talks to `/api/abs-rpc`, which proxies JSON-RPC traffic to `https://api.mainnet.abs.xyz` via `server/routes/abs-rpc.ts`.
 - Scores are summed across multiple submissions per address before rendering in the leaderboard page.
 
 ## Project Structure
+
 ```text
 client/
   components/
@@ -69,6 +80,7 @@ netlify/functions/   Serverless adapter for deployment
 ```
 
 ## Recent Fixes & Improvements
+
 - Corrected miss detection so only blocks that passed their apex trigger game over.
 - Prevented gameplay input when menus or overlays are showing, eliminating background interactions.
 - Summed leaderboard scores per wallet instead of showing only the single best run.
@@ -77,7 +89,9 @@ netlify/functions/   Serverless adapter for deployment
 - Hardened score submission flow with confirmation prompts and toast feedback.
 
 ## Deployment
+
 Deployments are compatible with Netlify or Vercel. To publish:
+
 1. Build the project with `pnpm build` (optional but recommended before shipping).
 2. Use the Builder.io MCP integrations for hosting:
    - [Connect to Netlify](#open-mcp-popover) for continuous deployment and serverless adapters.
@@ -87,7 +101,9 @@ Deployments are compatible with Netlify or Vercel. To publish:
 For previewing without full deployment, share the in-app [Open Preview](#open-preview) link with collaborators.
 
 ## Available MCP Integrations
+
 Builder.io projects can connect to the following MCP servers through the platform UI:
+
 - [Connect to Supabase](#open-mcp-popover) — database, auth, and real-time APIs.
 - [Connect to Neon](#open-mcp-popover) — serverless Postgres.
 - [Connect to Netlify](#open-mcp-popover) — deployment and CDN.
@@ -101,9 +117,11 @@ Builder.io projects can connect to the following MCP servers through the platfor
 - [Connect to Context7](#open-mcp-popover) — up-to-date framework and library docs.
 
 ## Contributing
+
 1. Create a new branch for your feature.
 2. Run `pnpm typecheck` and `pnpm test` before opening a pull request.
 3. Ensure UI additions follow the component patterns in `client/components/ui` and favor composable, accessible primitives.
 
 ## License
+
 This project is currently unlicensed. Contact the maintainers if you intend to use or distribute the code.

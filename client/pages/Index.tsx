@@ -4,7 +4,16 @@ import WalletConnect from "@/components/WalletConnect";
 import "@/components/game/block-ninja.css";
 import { getContract, connectWallet } from "@/lib/blockchain";
 import { toast } from "sonner";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 
 export default function Index() {
@@ -51,7 +60,9 @@ export default function Index() {
         toast("Transaction rejected");
       } else {
         console.error("[score] submit failed", e);
-        toast.error("Submit failed", { description: message || "Failed to submit score" });
+        toast.error("Submit failed", {
+          description: message || "Failed to submit score",
+        });
       }
     } finally {
       setSubmitting(false);
@@ -64,24 +75,40 @@ export default function Index() {
       {!address ? (
         <div className="block-ninja-gate">
           <div className="text-center space-y-4">
-            <div className="text-white/80 text-lg">Connect your wallet to play</div>
-            <WalletConnect onConnected={(addr) => { setAddress(addr); }} />
+            <div className="text-white/80 text-lg">
+              Connect your wallet to play
+            </div>
+            <WalletConnect
+              onConnected={(addr) => {
+                setAddress(addr);
+              }}
+            />
           </div>
         </div>
       ) : null}
-      <BlockNinja canPlay={!!address && !submitting} onSubmitScore={submitScore} onAutoStart={() => {}} onRequireWallet={() => toast("Connect your wallet to play")} onOpenLeaderboard={() => navigate('/leaderboard')} />
+      <BlockNinja
+        canPlay={!!address && !submitting}
+        onSubmitScore={submitScore}
+        onAutoStart={() => {}}
+        onRequireWallet={() => toast("Connect your wallet to play")}
+        onOpenLeaderboard={() => navigate("/leaderboard")}
+      />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Submit Score</AlertDialogTitle>
             <AlertDialogDescription>
-              {pendingScore != null ? `Do you want to submit your score of ${pendingScore}?` : ""}
+              {pendingScore != null
+                ? `Do you want to submit your score of ${pendingScore}?`
+                : ""}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmSubmit} disabled={submitting}>Submit</AlertDialogAction>
+            <AlertDialogAction onClick={confirmSubmit} disabled={submitting}>
+              Submit
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
