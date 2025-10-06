@@ -9,14 +9,25 @@ export const BASE = {
   explorer: "https://base.blockscout.com/",
 } as const;
 
-export const LEADERBOARD_ADDRESS = "0x7B21Ae885942643CAb67E87AA0C427c12B40946D" as const;
+export const LEADERBOARD_ADDRESS =
+  "0x7B21Ae885942643CAb67E87AA0C427c12B40946D" as const;
 
 export const LEADERBOARD_ABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: "address", name: "player", type: "address" },
-      { indexed: false, internalType: "uint256", name: "score", type: "uint256" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "player",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "score",
+        type: "uint256",
+      },
     ],
     name: "NewHighScore",
     type: "event",
@@ -24,9 +35,24 @@ export const LEADERBOARD_ABI = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: "address", name: "player", type: "address" },
-      { indexed: false, internalType: "uint256", name: "score", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "player",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "score",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "timestamp",
+        type: "uint256",
+      },
     ],
     name: "ScoreSubmitted",
     type: "event",
@@ -129,7 +155,10 @@ export const LEADERBOARD_ABI = [
   },
 ] as const;
 
-export type InjectedEthereum = (Window & typeof globalThis) & { ethereum?: any; okxwallet?: any };
+export type InjectedEthereum = (Window & typeof globalThis) & {
+  ethereum?: any;
+  okxwallet?: any;
+};
 
 export function detectInjectedProvider(): any | null {
   const w = window as InjectedEthereum;
@@ -151,9 +180,15 @@ export function detectInjectedProvider(): any | null {
 export async function ensureBaseChain(provider: any) {
   const chainIdHex = BASE.chainIdHex;
   try {
-    await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: chainIdHex }] });
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: chainIdHex }],
+    });
   } catch (err: any) {
-    if (err?.code === 4902 || ("message" in err && String(err.message).includes("Unrecognized chain"))) {
+    if (
+      err?.code === 4902 ||
+      ("message" in err && String(err.message).includes("Unrecognized chain"))
+    ) {
       await provider.request({
         method: "wallet_addEthereumChain",
         params: [
@@ -166,20 +201,28 @@ export async function ensureBaseChain(provider: any) {
           },
         ],
       });
-      await provider.request({ method: "wallet_switchEthereumChain", params: [{ chainId: chainIdHex }] });
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: chainIdHex }],
+      });
     } else {
       throw err;
     }
   }
 }
 
-export async function connectWallet(): Promise<{ address: string; provider: BrowserProvider }> {
+export async function connectWallet(): Promise<{
+  address: string;
+  provider: BrowserProvider;
+}> {
   console.log("[wallet] connect init");
   const injected = detectInjectedProvider();
   if (!injected) throw new Error("No injected wallet found");
   await ensureBaseChain(injected);
   const browserProvider = new BrowserProvider(injected);
-  const accounts: string[] = await injected.request({ method: "eth_requestAccounts" });
+  const accounts: string[] = await injected.request({
+    method: "eth_requestAccounts",
+  });
   const address = accounts[0];
   console.log("[wallet] connected", address);
   return { address, provider: browserProvider };
