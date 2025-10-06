@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleAbsRpc } from "./routes/abs-rpc";
+import { handleBaseRpc } from "./routes/abs-rpc";
 
 export function createServer() {
   const app = express();
@@ -20,8 +20,8 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // RPC proxy (avoids browser CORS limits against Abstract RPC)
-  app.post("/api/abs-rpc", handleAbsRpc);
+  // RPC proxy (avoids browser CORS limits against Base RPC)
+  app.post("/api/base-rpc", handleBaseRpc);
 
   return app;
 }
