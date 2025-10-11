@@ -744,6 +744,10 @@ export default function BlockNinja({
       };
       const returnTarget = (target: any) => {
         target.reset();
+        const targetData = target as any;
+        targetData.hasPeaked = false;
+        targetData.minY = undefined;
+        targetData.spawnY = undefined;
         const pool = target.wireframe ? targetWireframePool : targetPool;
         (pool.get(target.color) as any[]).push(target);
       };
