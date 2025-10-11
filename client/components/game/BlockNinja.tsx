@@ -1162,7 +1162,10 @@ export default function BlockNinja({
           target.z = Math.random() * targetRadius * 2 - targetRadius;
           target.xD = Math.random() * ((target.x * -2) / 120);
           target.yD = -20;
-          (target as any).hasPeaked = false;
+          const targetData = target as any;
+          targetData.spawnY = target.y;
+          targetData.minY = target.y;
+          targetData.hasPeaked = false;
           targets.push(target);
         }
         const leftBound = -centerX + targetRadius;
