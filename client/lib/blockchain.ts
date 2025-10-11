@@ -1,16 +1,16 @@
 import { BrowserProvider, Contract, JsonRpcProvider } from "ethers";
 
-export const BASE = {
-  chainId: 8453,
-  chainIdHex: "0x2105",
-  name: "Base",
-  rpcUrl: "https://mainnet.base.org",
-  currency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  explorer: "https://base.blockscout.com/",
+export const MEGAETH = {
+  chainId: 6342,
+  chainIdHex: "0x18C6",
+  name: "MegaETH Testnet",
+  rpcUrl: "https://carrot.megaeth.com/rpc",
+  currency: { name: "MegaETH", symbol: "MEGA", decimals: 18 },
+  explorer: "https://www.megaexplorer.xyz/",
 } as const;
 
 export const LEADERBOARD_ADDRESS =
-  "0x7B21Ae885942643CAb67E87AA0C427c12B40946D" as const;
+  "0x1C38845ee1240D83B2bec9D5655aaB543fa74b77" as const;
 
 export const LEADERBOARD_ABI = [
   {
