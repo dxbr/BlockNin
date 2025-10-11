@@ -1174,6 +1174,7 @@ export default function BlockNinja({
         const boundDamping = 0.4;
         targetLoop: for (let i = targets.length - 1; i >= 0; i--) {
           const target = targets[i];
+          const targetData = target as any;
           target.x += target.xD * simSpeed;
           target.y += target.yD * simSpeed;
           if (target.y < ceiling) {
@@ -1191,9 +1192,21 @@ export default function BlockNinja({
             target.z = backboardZ;
             target.zD *= -boundDamping;
           }
+          if (targetData.minY === undefined || target.y < targetData.minY) {
+            targetData.minY = target.y;
+          }
           target.yD += gravity * simSpeed;
-          if ((target as any).hasPeaked === false && target.yD > 0) {
-            (target as any).hasPeaked = true;
+          if (
+            targetData.hasPeaked === false &&
+            target.yD > 0 &&
+            targetData.spawnY !== undefined
+          ) {
+            const apexTravel =
+              (targetData.spawnY as number) -
+              (targetData.minY ?? targetData.spawnY);
+            if (apexTravel >= targetApexThreshold) {
+              targetData.hasPeaked = true;
+            }
           }
           target.rotateX += target.rotateXD * simSpeed;
           target.rotateY += target.rotateYD * simSpeed;
