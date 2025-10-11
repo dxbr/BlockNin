@@ -1214,7 +1214,7 @@ export default function BlockNinja({
           target.transform();
           target.project();
           if (target.y > centerY + targetHitRadius * 2) {
-            const peaked = (target as any).hasPeaked === true;
+            const peaked = targetData.hasPeaked === true;
             targets.splice(i, 1);
             returnTarget(target);
             if (isInGame() && peaked) {
