@@ -177,8 +177,8 @@ export function detectInjectedProvider(): any | null {
   return ethereum;
 }
 
-export async function ensureBaseChain(provider: any) {
-  const chainIdHex = BASE.chainIdHex;
+export async function ensureMegaETHChain(provider: any) {
+  const chainIdHex = MEGAETH.chainIdHex;
   try {
     await provider.request({
       method: "wallet_switchEthereumChain",
@@ -194,10 +194,10 @@ export async function ensureBaseChain(provider: any) {
         params: [
           {
             chainId: chainIdHex,
-            chainName: BASE.name,
-            nativeCurrency: BASE.currency,
-            rpcUrls: [BASE.rpcUrl],
-            blockExplorerUrls: [BASE.explorer],
+            chainName: MEGAETH.name,
+            nativeCurrency: MEGAETH.currency,
+            rpcUrls: [MEGAETH.rpcUrl],
+            blockExplorerUrls: [MEGAETH.explorer],
           },
         ],
       });
@@ -218,7 +218,7 @@ export async function connectWallet(): Promise<{
   console.log("[wallet] connect init");
   const injected = detectInjectedProvider();
   if (!injected) throw new Error("No injected wallet found");
-  await ensureBaseChain(injected);
+  await ensureMegaETHChain(injected);
   const browserProvider = new BrowserProvider(injected);
   const accounts: string[] = await injected.request({
     method: "eth_requestAccounts",
