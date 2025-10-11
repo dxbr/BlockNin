@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleBaseRpc } from "./routes/base-rpc";
+import { handleMegaEthRpc } from "./routes/megaeth-rpc";
 
 export function createServer() {
   const app = express();
@@ -20,8 +20,8 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // RPC proxy (avoids browser CORS limits against Base RPC)
-  app.post("/api/base-rpc", handleBaseRpc);
+  // RPC proxy (avoids browser CORS limits against MegaETH RPC)
+  app.post("/api/megaeth-rpc", handleMegaEthRpc);
 
   return app;
 }
