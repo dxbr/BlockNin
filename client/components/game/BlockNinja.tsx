@@ -78,12 +78,8 @@ export default function BlockNinja({
 
       // Sound effects
       const sfx = {
-        ninja: new Audio(
-          "https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fc0296aa3558749399a985a84e757f968?alt=media&token=b26fbe7c-067a-41e8-83e3-de4db7c28967&apiKey=46bb7f1aa7e846bbae66fe2261f73473",
-        ),
-        click: new Audio(
-          "https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fe9efecf4b5f84d81ac7139866c9e9e98?alt=media&token=4aaed14f-5b19-4fa4-aa07-079a4a5975d9&apiKey=46bb7f1aa7e846bbae66fe2261f73473",
-        ),
+        ninja: new Audio("/ninja.wav"),
+        click: new Audio("/click.wav"),
       } as const;
       sfx.ninja.preload = "auto";
       sfx.click.preload = "auto";
