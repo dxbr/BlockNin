@@ -60,7 +60,7 @@ pnpm build       # Production client + server bundles
 
 - Contract address: `0x1C38845ee1240D83B2bec9D5655aaB543fa74b77` (MegaETH Testnet).
 - The client uses `connectWallet()` to ensure the MegaETH Testnet chain is added and selected before play via `ensureMegaETHChain()`.
-- `getReadProvider()` talks to `/api/megaeth-rpc`, which proxies JSON-RPC traffic to `https://carrot.megaeth.com/rpc` via `server/routes/megaeth-rpc.ts`.
+- `getReadProvider()` talks to `/api/megaeth-rpc`, which rotates through the configured MegaETH RPC endpoints (override with `MEGAETH_RPC_URL`) and falls back to Thirdweb if the primary endpoint rejects the call.
 - Scores are summed across multiple submissions per address before rendering in the leaderboard page.
 
 ## Project Structure
