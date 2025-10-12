@@ -1211,23 +1211,34 @@ export default function BlockNinja({
            }
           }
           target.rotateX += target.rotateXD * simSpeed;
-          target.rotateY += target.rotateYD * simSpeed;
-          target.rotateZ += target.rotateZD * simSpeed;
-          target.transform();
-          target.project();
-          if (target.y > centerY + targetHitRadius * 2) {
-            const peaked = targetData.hasPeaked === true;
-            const livedLongEnough =
-              (state.game.time - (targetData.spawnTime ?? 0)) > 1000; // 1000 ms guard
+target.rotateY += target.rotateYD * simSpeed;
+target.rotateZ += target.rotateZD * simSpeed;
+target.transform();
+target.project();
 
-          targets.splice(i, 1);
-          returnTarget(target);
+// --- Miss detection (Game Over trigger) ---
+if (target.y > centerY + targetHitRadius * 2) {
+  const peaked = targetData.hasPeaked === true;
+  const livedLongEnough =
+    (state.game.time - (targetData.spawnTime ?? 0)) > 1000; // cube must exist >1s before miss check
 
-         if (isInGame() && peaked && livedLongEnough) {
-           endGame();
-          }
-           continue;
-        }
+  // ✅ skip early Game Overs right after spawn
+  if (!livedLongEnough) {
+    targets.splice(i, 1);
+    returnTarget(target);
+    continue;
+  }
+
+  // ✅ only end game if cube actually peaked (went up then fell)
+  targets.splice(i, 1);
+  returnTarget(target);
+
+  if (isInGame() && peaked) {
+    endGame();
+  }
+  continue;
+}
+
 
           const hitTestCount = Math.ceil((pointerSpeed / targetRadius) * 2);
           for (let ii = 1; ii <= hitTestCount; ii++) {
