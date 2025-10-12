@@ -24,7 +24,9 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export default function Index() {
-  const [address, setAddress] = useState<string | null>(null);
+  const [address, setAddress] = useState<string | null>(() =>
+    getCachedWalletAddress(),
+  );
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
