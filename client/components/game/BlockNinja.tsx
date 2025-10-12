@@ -30,6 +30,7 @@ export default function BlockNinja({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (function initGame() {
       // Timing multiplier for entire game engine.
+      console.log("BlockNinja script loaded — debug build");
       let gameSpeed = 1;
 
       // Colors
