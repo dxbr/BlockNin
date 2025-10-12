@@ -78,7 +78,7 @@ export default function BlockNinja({
 
       // Sound effects
       const sfx = {
-        ninja: new Audio("/ninja.wav"),
+        ninja: new Audio("/ninja.mp3"),
         click: new Audio("/click.wav"),
       } as const;
       sfx.ninja.preload = "auto";
