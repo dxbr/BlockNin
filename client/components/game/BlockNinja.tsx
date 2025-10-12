@@ -1030,9 +1030,14 @@ export default function BlockNinja({
       );
 
       function setActiveMenu(menu: any) {
-        state.menus.active = menu;
-        renderMenus();
-      }
+  const prev = state.menus.active;
+  state.menus.active = menu;
+  // Log transitions to reproduce when/why menus open
+  try {
+    console.log("setActiveMenu()", { prev, next: menu, time: state.game.time, isInGame: isInGame() });
+  } catch (e) {}
+  renderMenus();
+}
       function setScore(score: number) {
         state.game.score = score;
         renderScoreHud();
