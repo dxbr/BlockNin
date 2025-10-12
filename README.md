@@ -100,22 +100,6 @@ Deployments are compatible with Netlify or Vercel. To publish:
 
 For previewing without full deployment, share the in-app [Open Preview](#open-preview) link with collaborators.
 
-## Available MCP Integrations
-
-Builder.io projects can connect to the following MCP servers through the platform UI:
-
-- [Connect to Supabase](#open-mcp-popover) — database, auth, and real-time APIs.
-- [Connect to Neon](#open-mcp-popover) — serverless Postgres.
-- [Connect to Netlify](#open-mcp-popover) — deployment and CDN.
-- [Connect to Zapier](#open-mcp-popover) — automation across thousands of apps.
-- [Connect to Figma](#open-mcp-popover) — design-to-code workflows via the Builder plugin.
-- [Connect to Builder.io](#open-mcp-popover) — manage CMS content and assets.
-- [Connect to Linear](#open-mcp-popover) — project and issue tracking.
-- [Connect to Notion](#open-mcp-popover) — documentation and notes.
-- [Connect to Sentry](#open-mcp-popover) — error monitoring and performance telemetry.
-- [Connect to Prisma](#open-mcp-popover) — ORM management for Postgres.
-- [Connect to Context7](#open-mcp-popover) — up-to-date framework and library docs.
-
 ## Contributing
 
 1. Create a new branch for your feature.
