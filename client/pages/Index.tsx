@@ -33,6 +33,10 @@ export default function Index() {
   const [pendingScore, setPendingScore] = useState<number | null>(null);
 
   useEffect(() => {
+    setCachedWalletAddress(address);
+  }, [address]);
+
+  useEffect(() => {
     if (address) {
       console.log("[nav] auto-start game after wallet connect");
     }
