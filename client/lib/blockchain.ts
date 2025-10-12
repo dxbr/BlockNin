@@ -255,7 +255,7 @@ export async function ensureMegaETHChain(provider: any) {
             chainId: chainIdHex,
             chainName: MEGAETH.name,
             nativeCurrency: MEGAETH.currency,
-            rpcUrls: [MEGAETH.rpcUrl],
+            rpcUrls: MEGAETH_RPC_URLS,
             blockExplorerUrls: [MEGAETH.explorer],
           },
         ],
