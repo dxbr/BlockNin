@@ -1,24 +1,55 @@
 import type { RequestHandler } from "express";
 
-const MEGAETH_RPC = "https://carrot.megaeth.com/rpc";
+const RPC_ENDPOINTS = [
+  process.env.MEGAETH_RPC_URL,
+  "https://carrot.megaeth.com/rpc",
+  "https://6342.rpc.thirdweb.com",
+].filter((url): url is string => typeof url === "string" && url.length > 0);
 
 export const handleMegaEthRpc: RequestHandler = async (req, res) => {
-  try {
-    const upstream = await fetch(MEGAETH_RPC, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(req.body),
-    });
-    const text = await upstream.text();
-    res.status(upstream.status);
-    res.setHeader(
-      "content-type",
-      upstream.headers.get("content-type") || "application/json",
-    );
-    res.send(text);
-  } catch (e: any) {
-    res
-      .status(502)
-      .json({ error: "upstream_failed", message: e?.message || String(e) });
+  let lastError:
+    | { status: number; body: string; endpoint: string }
+    | { status: number; body: string; endpoint?: string }
+    | null = null;
+
+  for (const endpoint of RPC_ENDPOINTS) {
+    try {
+      const upstream = await fetch(endpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(req.body),
+      });
+      const text = await upstream.text();
+      if (upstream.ok) {
+        res.status(upstream.status);
+        res.setHeader(
+          "content-type",
+          upstream.headers.get("content-type") || "application/json",
+        );
+        res.send(text);
+        return;
+      }
+      lastError = { status: upstream.status, body: text, endpoint };
+    } catch (e: any) {
+      lastError = {
+        status: 502,
+        body: e?.message || String(e),
+        endpoint,
+      };
+    }
   }
+
+  if (lastError) {
+    res.status(lastError.status).json({
+      error: "upstream_failed",
+      endpoint: lastError.endpoint,
+      message: lastError.body,
+    });
+    return;
+  }
+
+  res.status(502).json({
+    error: "upstream_failed",
+    message: "No RPC endpoints responded",
+  });
 };
