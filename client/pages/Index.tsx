@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import BlockNinja from "@/components/game/BlockNinja";
 import WalletConnect from "@/components/WalletConnect";
 import "@/components/game/block-ninja.css";
-import { getContract, connectWallet } from "@/lib/blockchain";
+import {
+  getContract,
+  connectWallet,
+  detectInjectedProvider,
+  getCachedWalletAddress,
+  restoreWalletConnection,
+  setCachedWalletAddress,
+} from "@/lib/blockchain";
 import { toast } from "sonner";
 import {
   AlertDialog,
