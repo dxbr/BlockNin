@@ -282,7 +282,11 @@ export async function connectWallet(): Promise<{
   const accounts: string[] = await injected.request({
     method: "eth_requestAccounts",
   });
+  if (!accounts?.length) {
+    throw new Error("No accounts returned by wallet");
+  }
   const address = accounts[0];
+  setCachedWalletAddress(address);
   console.log("[wallet] connected", address);
   return { address, provider: browserProvider };
 }
