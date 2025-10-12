@@ -33,6 +33,26 @@ export default function Index() {
   const [pendingScore, setPendingScore] = useState<number | null>(null);
 
   useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const restored = await restoreWalletConnection();
+        if (!active) return;
+        if (restored?.address) {
+          setAddress(restored.address);
+        } else {
+          setAddress((prev) => (prev ? null : prev));
+        }
+      } catch (err) {
+        console.warn("[wallet] restore failed", err);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     setCachedWalletAddress(address);
   }, [address]);
 
