@@ -57,6 +57,23 @@ export default function Index() {
   }, [address]);
 
   useEffect(() => {
+    const injected = detectInjectedProvider();
+    if (!injected?.on) return;
+    const handleAccountsChanged = (accounts: string[] = []) => {
+      const next = accounts.length ? accounts[0] : null;
+      setAddress((prev) => (prev === next ? prev : next));
+    };
+    injected.on("accountsChanged", handleAccountsChanged);
+    return () => {
+      if (typeof injected.removeListener === "function") {
+        injected.removeListener("accountsChanged", handleAccountsChanged);
+      } else if (typeof injected.off === "function") {
+        injected.off("accountsChanged", handleAccountsChanged);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (address) {
       console.log("[nav] auto-start game after wallet connect");
     }
