@@ -1073,13 +1073,42 @@ export default function BlockNinja({
         isPaused() && setActiveMenu(null);
       }
       function endGame() {
-        handleCanvasPointerUp();
-        if (isNewHighScore()) {
-          setHighScore(state.game.score);
-        }
-        gameOver = true;
-        setActiveMenu(MENU_SCORE);
-      }
+  // Prevent double-trigger
+  if (gameOver) {
+    console.warn("endGame() called but gameOver already true");
+    return;
+  }
+
+  // If menus are active (not in-game) warn
+  if (!isInGame()) {
+    console.warn("endGame() called while NOT in-game. menus.active:", state.menus.active);
+  }
+
+  handleCanvasPointerUp();
+
+  if (isNewHighScore()) {
+    setHighScore(state.game.score);
+  }
+
+  gameOver = true;
+
+  // Log context so we can inspect why it ended
+  try {
+    console.log("=== endGame() triggered ===", {
+      time: state.game.time,
+      score: state.game.score,
+      cubeCount: state.game.cubeCount,
+      menusActive: state.menus.active,
+      lastHighScore: _lastHighscore,
+    });
+    console.trace();
+  } catch (e) {
+    /* ignore logging errors */
+  }
+
+  setActiveMenu(MENU_SCORE);
+}
+
       (window as any).addEventListener("keydown", (event: KeyboardEvent) => {
         if (event.key === "p") {
           isPaused() ? resumeGame() : pauseGame();
