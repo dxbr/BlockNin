@@ -1253,26 +1253,46 @@ target.project();
 // --- Miss detection (Game Over trigger) ---
 if (target.y > centerY + targetHitRadius * 2) {
   const peaked = targetData.hasPeaked === true;
-  const livedLongEnough =
-    (state.game.time - (targetData.spawnTime ?? 0)) > 1000; // cube must exist >1s before miss check
+  const timeSinceSpawn = state.game.time - (targetData.spawnTime ?? 0);
+  const livedLongEnough = timeSinceSpawn > 1000; // 1000 ms guard
 
-  // ✅ skip early Game Overs right after spawn
+  // If it's fallen off too quickly after being spawned, ignore as a miss.
   if (!livedLongEnough) {
+    // debug
+    console.log("Ignoring early-offscreen target (too young)", {
+      spawnTime: targetData.spawnTime,
+      timeSinceSpawn,
+      y: target.y,
+      spawnY: targetData.spawnY,
+      minY: targetData.minY,
+      yD: target.yD,
+      peaked,
+    });
     targets.splice(i, 1);
     returnTarget(target);
     continue;
   }
 
-  // ✅ only end game if cube actually peaked (went up then fell)
+  // Normal path: log why this target is considered a miss before we do anything
+  console.log("Target offscreen: evaluating miss", {
+    spawnTime: targetData.spawnTime,
+    timeSinceSpawn,
+    y: target.y,
+    spawnY: targetData.spawnY,
+    minY: targetData.minY,
+    yD: target.yD,
+    peaked,
+  });
+
   targets.splice(i, 1);
   returnTarget(target);
 
   if (isInGame() && peaked) {
+    console.log("Triggering endGame() from miss detection", { score: state.game.score, time: state.game.time });
     endGame();
   }
   continue;
 }
-
 
           const hitTestCount = Math.ceil((pointerSpeed / targetRadius) * 2);
           for (let ii = 1; ii <= hitTestCount; ii++) {
