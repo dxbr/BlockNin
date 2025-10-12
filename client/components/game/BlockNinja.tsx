@@ -1170,6 +1170,7 @@ export default function BlockNinja({
           targetData.spawnY = target.y;
           targetData.minY = target.y;
           targetData.hasPeaked = false;
+          targetData.spawnTime = state.game.time;
           targets.push(target);
         }
         const leftBound = -centerX + targetRadius;
