@@ -5,6 +5,7 @@ export const MEGAETH = {
   chainIdHex: "0x18C6",
   name: "MegaETH Testnet",
   rpcUrl: "https://carrot.megaeth.com/rpc",
+  fallbackRpcUrls: ["https://6342.rpc.thirdweb.com"],
   currency: { name: "MegaETH", symbol: "MEGA", decimals: 18 },
   explorer: "https://www.megaexplorer.xyz/",
 } as const;
