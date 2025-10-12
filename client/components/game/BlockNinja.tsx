@@ -1220,13 +1220,18 @@ export default function BlockNinja({
           target.project();
           if (target.y > centerY + targetHitRadius * 2) {
             const peaked = targetData.hasPeaked === true;
-            targets.splice(i, 1);
-            returnTarget(target);
-            if (isInGame() && peaked) {
-              endGame();
-            }
-            continue;
+            const livedLongEnough =
+              (state.game.time - (targetData.spawnTime ?? 0)) > 1000; // 1000 ms guard
+
+          targets.splice(i, 1);
+          returnTarget(target);
+
+         if (isInGame() && peaked && livedLongEnough) {
+           endGame();
           }
+           continue;
+        }
+
           const hitTestCount = Math.ceil((pointerSpeed / targetRadius) * 2);
           for (let ii = 1; ii <= hitTestCount; ii++) {
             const percent = 1 - ii / hitTestCount;
