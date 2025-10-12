@@ -156,6 +156,64 @@ export const LEADERBOARD_ABI = [
   },
 ] as const;
 
+const MEGAETH_RPC_URLS = Array.from(
+  new Set([MEGAETH.rpcUrl, ...(MEGAETH.fallbackRpcUrls ?? [])]),
+);
+
+const WALLET_CACHE_KEY = "__block_ninja_wallet";
+
+export function setCachedWalletAddress(address: string | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (address) {
+      window.localStorage.setItem(WALLET_CACHE_KEY, address);
+    } else {
+      window.localStorage.removeItem(WALLET_CACHE_KEY);
+    }
+  } catch (_err) {
+    // ignore storage errors (private browsing, etc.)
+  }
+}
+
+export function getCachedWalletAddress(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(WALLET_CACHE_KEY);
+  } catch (_err) {
+    return null;
+  }
+}
+
+export async function restoreWalletConnection(): Promise<{
+  address: string;
+  provider: BrowserProvider;
+} | null> {
+  const injected = detectInjectedProvider();
+  if (!injected) return null;
+  let accounts: string[] = [];
+  try {
+    accounts = await injected.request({ method: "eth_accounts" });
+  } catch (_err) {
+    return null;
+  }
+  const address = accounts?.[0];
+  if (!address) {
+    setCachedWalletAddress(null);
+    return null;
+  }
+  try {
+    const chainId: string = await injected.request({ method: "eth_chainId" });
+    if ((chainId ?? "").toLowerCase() !== MEGAETH.chainIdHex.toLowerCase()) {
+      await ensureMegaETHChain(injected);
+    }
+  } catch (_err) {
+    // ignore chain sync issues during passive restore
+  }
+  const provider = new BrowserProvider(injected);
+  setCachedWalletAddress(address);
+  return { address, provider };
+}
+
 export type InjectedEthereum = (Window & typeof globalThis) & {
   ethereum?: any;
   okxwallet?: any;
