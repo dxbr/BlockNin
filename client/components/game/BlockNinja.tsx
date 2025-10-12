@@ -70,7 +70,7 @@ export default function BlockNinja({
       const touchPoints: any[] = [];
       const targetRadius = 40;
       const targetHitRadius = 50;
-      const targetApexThreshold = targetHitRadius * 1.2;
+      const targetApexThreshold = targetHitRadius * 1.4;
       const makeTargetGlueColor = (_target: any) => "rgb(170,221,255)";
       const fragRadius = targetRadius / 3;
 
