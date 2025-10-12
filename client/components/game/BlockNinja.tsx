@@ -1198,16 +1198,17 @@ export default function BlockNinja({
           }
           target.yD += gravity * simSpeed;
           if (
-            targetData.hasPeaked === false &&
-            target.yD > 0 &&
-            targetData.spawnY !== undefined
+            !targetData.hasPeaked &&
+            typeof targetData.spawnY === "number" &&
+            typeof targetData.minY === "number" &&
+            target.yD > 0
           ) {
-            const apexTravel =
-              (targetData.spawnY as number) -
-              (targetData.minY ?? targetData.spawnY);
-            if (apexTravel >= targetApexThreshold) {
+            const apexTravel = targetData.spawnY - targetData.minY;
+
+           // Require a more noticeable upward movement and positive fall speed
+           if (apexTravel >= targetApexThreshold && target.yD > 0.5) {
               targetData.hasPeaked = true;
-            }
+           }
           }
           target.rotateX += target.rotateXD * simSpeed;
           target.rotateY += target.rotateYD * simSpeed;
