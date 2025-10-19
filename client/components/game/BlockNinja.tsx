@@ -30,6 +30,7 @@ export default function BlockNinja({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (function initGame() {
       // Timing multiplier for entire game engine.
+      console.log("BlockNinja script loaded — debug build");
       let gameSpeed = 1;
 
       // Colors
@@ -70,7 +71,7 @@ export default function BlockNinja({
       const touchPoints: any[] = [];
       const targetRadius = 40;
       const targetHitRadius = 50;
-      const targetApexThreshold = targetHitRadius * 0.5;
+      const targetApexThreshold = targetHitRadius * 1.5;
       const makeTargetGlueColor = (_target: any) => "rgb(170,221,255)";
       const fragRadius = targetRadius / 3;
 
@@ -78,12 +79,8 @@ export default function BlockNinja({
 
       // Sound effects
       const sfx = {
-        ninja: new Audio(
-          "https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fc0296aa3558749399a985a84e757f968?alt=media&token=b26fbe7c-067a-41e8-83e3-de4db7c28967&apiKey=46bb7f1aa7e846bbae66fe2261f73473",
-        ),
-        click: new Audio(
-          "https://cdn.builder.io/o/assets%2F46bb7f1aa7e846bbae66fe2261f73473%2Fe9efecf4b5f84d81ac7139866c9e9e98?alt=media&token=4aaed14f-5b19-4fa4-aa07-079a4a5975d9&apiKey=46bb7f1aa7e846bbae66fe2261f73473",
-        ),
+        ninja: new Audio("/ninja.mp3"),
+        click: new Audio("/click.wav"),
       } as const;
       sfx.ninja.preload = "auto";
       sfx.click.preload = "auto";
@@ -1034,9 +1031,14 @@ export default function BlockNinja({
       );
 
       function setActiveMenu(menu: any) {
-        state.menus.active = menu;
-        renderMenus();
-      }
+  const prev = state.menus.active;
+  state.menus.active = menu;
+  // Log transitions to reproduce when/why menus open
+  try {
+    console.log("setActiveMenu()", { prev, next: menu, time: state.game.time, isInGame: isInGame() });
+  } catch (e) {}
+  renderMenus();
+}
       function setScore(score: number) {
         state.game.score = score;
         renderScoreHud();
@@ -1077,13 +1079,42 @@ export default function BlockNinja({
         isPaused() && setActiveMenu(null);
       }
       function endGame() {
-        handleCanvasPointerUp();
-        if (isNewHighScore()) {
-          setHighScore(state.game.score);
-        }
-        gameOver = true;
-        setActiveMenu(MENU_SCORE);
-      }
+  // Prevent double-trigger
+  if (gameOver) {
+    console.warn("endGame() called but gameOver already true");
+    return;
+  }
+
+  // If menus are active (not in-game) warn
+  if (!isInGame()) {
+    console.warn("endGame() called while NOT in-game. menus.active:", state.menus.active);
+  }
+
+  handleCanvasPointerUp();
+
+  if (isNewHighScore()) {
+    setHighScore(state.game.score);
+  }
+
+  gameOver = true;
+
+  // Log context so we can inspect why it ended
+  try {
+    console.log("=== endGame() triggered ===", {
+      time: state.game.time,
+      score: state.game.score,
+      cubeCount: state.game.cubeCount,
+      menusActive: state.menus.active,
+      lastHighScore: _lastHighscore,
+    });
+    console.trace();
+  } catch (e) {
+    /* ignore logging errors */
+  }
+
+  setActiveMenu(MENU_SCORE);
+}
+
       (window as any).addEventListener("keydown", (event: KeyboardEvent) => {
         if (event.key === "p") {
           isPaused() ? resumeGame() : pauseGame();
@@ -1170,6 +1201,7 @@ export default function BlockNinja({
           targetData.spawnY = target.y;
           targetData.minY = target.y;
           targetData.hasPeaked = false;
+          targetData.spawnTime = state.game.time;
           targets.push(target);
         }
         const leftBound = -centerX + targetRadius;
@@ -1201,31 +1233,68 @@ export default function BlockNinja({
           }
           target.yD += gravity * simSpeed;
           if (
-            targetData.hasPeaked === false &&
-            target.yD > 0 &&
-            targetData.spawnY !== undefined
+            !targetData.hasPeaked &&
+            typeof targetData.spawnY === "number" &&
+            typeof targetData.minY === "number" &&
+            target.yD > 0
           ) {
-            const apexTravel =
-              (targetData.spawnY as number) -
-              (targetData.minY ?? targetData.spawnY);
-            if (apexTravel >= targetApexThreshold) {
+            const apexTravel = targetData.spawnY - targetData.minY;
+
+           // Require a more noticeable upward movement and positive fall speed
+           if (apexTravel >= targetApexThreshold && target.yD > 0.5) {
               targetData.hasPeaked = true;
-            }
+           }
           }
           target.rotateX += target.rotateXD * simSpeed;
-          target.rotateY += target.rotateYD * simSpeed;
-          target.rotateZ += target.rotateZD * simSpeed;
-          target.transform();
-          target.project();
-          if (target.y > centerY + targetHitRadius * 2) {
-            const peaked = targetData.hasPeaked === true;
-            targets.splice(i, 1);
-            returnTarget(target);
-            if (isInGame() && peaked) {
-              endGame();
-            }
-            continue;
-          }
+target.rotateY += target.rotateYD * simSpeed;
+target.rotateZ += target.rotateZD * simSpeed;
+target.transform();
+target.project();
+
+// --- Miss detection (Game Over trigger) ---
+if (target.y > centerY + targetHitRadius * 2) {
+  const peaked = targetData.hasPeaked === true;
+  const timeSinceSpawn = state.game.time - (targetData.spawnTime ?? 0);
+  const livedLongEnough = timeSinceSpawn > 1000; // 1000 ms guard
+
+  // If it's fallen off too quickly after being spawned, ignore as a miss.
+  if (!livedLongEnough) {
+    // debug
+    console.log("Ignoring early-offscreen target (too young)", {
+      spawnTime: targetData.spawnTime,
+      timeSinceSpawn,
+      y: target.y,
+      spawnY: targetData.spawnY,
+      minY: targetData.minY,
+      yD: target.yD,
+      peaked,
+    });
+    targets.splice(i, 1);
+    returnTarget(target);
+    continue;
+  }
+
+  // Normal path: log why this target is considered a miss before we do anything
+  console.log("Target offscreen: evaluating miss", {
+    spawnTime: targetData.spawnTime,
+    timeSinceSpawn,
+    y: target.y,
+    spawnY: targetData.spawnY,
+    minY: targetData.minY,
+    yD: target.yD,
+    peaked,
+  });
+
+  targets.splice(i, 1);
+  returnTarget(target);
+
+  if (isInGame() && peaked) {
+    console.log("Triggering endGame() from miss detection", { score: state.game.score, time: state.game.time });
+    endGame();
+  }
+  continue;
+}
+
           const hitTestCount = Math.ceil((pointerSpeed / targetRadius) * 2);
           for (let ii = 1; ii <= hitTestCount; ii++) {
             const percent = 1 - ii / hitTestCount;
