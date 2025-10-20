@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => ({
     strictPort: true,
     hmr: {
       clientPort: 443,
-      protocol: 'wss',
     },
     fs: {
       allow: ["./client", "./shared"],
