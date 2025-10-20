@@ -6,6 +6,7 @@ export interface BlockNinjaProps {
   onAutoStart?: () => void;
   onRequireWallet?: () => void;
   onOpenLeaderboard?: () => void;
+  address?: string | null;
 }
 
 export default function BlockNinja({
@@ -14,6 +15,7 @@ export default function BlockNinja({
   onAutoStart,
   onRequireWallet,
   onOpenLeaderboard,
+  address,
 }: BlockNinjaProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
@@ -1738,6 +1740,11 @@ if (target.y > centerY + targetHitRadius * 2) {
 
   return (
     <div ref={rootRef} className="block-ninja-root">
+      {address ? (
+        <div className="status-badge px-3 py-1 rounded bg-black/50 text-white/90 text-xs">
+          Connected: {address.length > 10 ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
+        </div>
+      ) : null}
       <canvas id="c"></canvas>
       <div className="hud">
         <div className="hud__score">
