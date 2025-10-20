@@ -4,7 +4,7 @@ export const MEGAETH = {
   chainId: 10143,
   chainIdHex: "0x279F",
   name: "Monad Testnet",
-  rpcUrl: "https://testnet-rpc.monad.xyz/",
+  rpcUrl: "https://rpc.ankr.com/monad_testnet",
   fallbackRpcUrls: [],
   currency: { name: "Monad", symbol: "MON", decimals: 18 },
   explorer: "https://testnet.monadexplorer.com/",
