@@ -2,22 +2,28 @@
 
 Block Ninja is a fast-paced slicing game where players cut cascading blocks, chase high scores, and compete on an on-chain leaderboard. The experience blends arcade gameplay with a wallet-gated flow, sound design, and a responsive interface built with modern web tooling.
 
+---
+
 ## Features
 
-- **Precision canvas gameplay** with tuned physics, miss detection, slow-motion meter, and responsive pointer support.
-- **Wallet-gated sessions** that blur the background until a MegaETH-compatible wallet connects, preventing unintended interactions.
-- **On-chain leaderboard** backed by an EVM smart contract that aggregates every submitted score per player.
-- **Audio feedback** using Builder-hosted `Ninja.mp3` and `MouseClick.wav` clips to punctuate block hits and UI interactions.
-- **Polished UI overlays** for start, pause, scoreboard, and submission flows, with menus fully blocking gameplay when active.
-- **Express proxy** that relays RPC calls to the MegaETH Testnet, avoiding browser CORS issues.
+- Precision canvas gameplay with tuned physics, miss detection, slow-motion meter, and responsive pointer support.
+- Wallet-gated sessions that blur the background until a Monad-compatible wallet connects, preventing unintended interactions.
+- On-chain leaderboard backed by a Monad Testnet smart contract that aggregates every submitted score per player.
+- Audio feedback using Builder-hosted `Ninja.mp3` and `MouseClick.wav` clips to punctuate block hits and UI interactions.
+- Polished UI overlays for start, pause, scoreboard, and submission flows, with menus fully blocking gameplay when active.
+- Express proxy that relays RPC calls to the Monad Testnet, avoiding browser CORS issues.
+
+---
 
 ## Tech Stack
 
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Radix UI primitives.
-- **Rendering:** Custom canvas/WebGL loop orchestrated inside `BlockNinja.tsx`.
-- **Blockchain:** `ethers` v6 with a MegaETH Testnet contract (`Leaderboard.sol`).
-- **Backend:** Express server co-located with the Vite build for proxying blockchain requests.
-- **Tooling:** pnpm, Vitest, TypeScript strict mode, PostCSS, Tailwind Merge.
+- Frontend: React 18, TypeScript, Vite, Tailwind CSS, Radix UI primitives.
+- Rendering: Custom canvas/WebGL loop orchestrated inside `BlockNinja.tsx`.
+- Blockchain: `ethers` v6 with a Monad Testnet contract (`Leaderboard.sol`).
+- Backend: Express server co-located with the Vite build for proxying blockchain requests.
+- Tooling: pnpm, Vitest, TypeScript strict mode, PostCSS, Tailwind Merge.
+
+---
 
 ## Getting Started
 
@@ -31,81 +37,55 @@ Block Ninja is a fast-paced slicing game where players cut cascading blocks, cha
 ```bash
 pnpm install
 ```
-
 ### Run the development server
-
 ```bash
 pnpm dev
 ```
-
 This starts Vite (client) and the Express server on a single port with hot reload.
 
 ### Run tests and quality checks
-
 ```bash
 pnpm test        # Vitest test suite
 pnpm typecheck   # TypeScript diagnostics
 pnpm build       # Production client + server bundles
 ```
+Gameplay Overview
 
-## Gameplay Overview
+Players connect an injected Monad-compatible wallet (MetaMask, OKX, etc.).
 
-1. Players connect an injected MegaETH-compatible wallet (MetaMask, OKX, etc.).
-2. The gate overlay disappears, revealing the Block Ninja canvas and HUD.
-3. Slice falling blocks to increase the score and build combos; missing a peaked block ends the run.
-4. Submit the final score to the `Leaderboard` contract. A confirmation dialog protects against accidental submissions.
-5. Visit the `/leaderboard` route to view aggregated standings with real-time refresh.
+The gate overlay disappears, revealing the Block Ninja canvas and HUD.
 
-## Smart Contract & Blockchain Integration
+Slice falling blocks to increase the score and build combos; missing a peaked block ends the run.
 
-- Contract address: `0x1C38845ee1240D83B2bec9D5655aaB543fa74b77` (MegaETH Testnet).
-- The client uses `connectWallet()` to ensure the MegaETH Testnet chain is added and selected before play via `ensureMegaETHChain()`.
-- `getReadProvider()` talks to `/api/megaeth-rpc`, which rotates through the configured MegaETH RPC endpoints (override with `MEGAETH_RPC_URL`) and falls back to Thirdweb if the primary endpoint rejects the call.
-- Scores are summed across multiple submissions per address before rendering in the leaderboard page.
+Submit the final score to the Leaderboard contract. A confirmation dialog protects against accidental submissions.
 
-## Project Structure
+Visit the /leaderboard route to view aggregated standings with real-time refresh.
 
-```text
-client/
-  components/
-    game/            Canvas engine, HUD, and styling
-    ui/              Shared Radix-based UI components
-  lib/               Blockchain utilities and helpers
-  pages/             SPA routes (home, leaderboard, 404)
-server/
-  routes/            Express handlers, including MegaETH RPC proxy
-shared/              Types shared between client and server
-contracts/           Solidity source for the leaderboard contract
-netlify/functions/   Serverless adapter for deployment
+Smart Contract & Blockchain Integration
+
 ```
+Network: Monad Testnet
 
-## Recent Fixes & Improvements
+RPC URL: https://testnet-rpc.monad.xyz/
 
-- Corrected miss detection so only blocks that passed their apex trigger game over.
-- Prevented gameplay input when menus or overlays are showing, eliminating background interactions.
-- Summed leaderboard scores per wallet instead of showing only the single best run.
-- Added wallet gate blur and UI hiding to keep onboarding focused.
-- Wired hit and UI sounds with preload, volume tuning, and idempotent playback.
-- Hardened score submission flow with confirmation prompts and toast feedback.
+Chain ID: 10143
 
-## Deployment
+Currency Symbol: MON
 
-Deployments are compatible with Netlify or Vercel. To publish:
+Block Explorer: https://testnet.monadexplorer.com/
+```
+```
+Contract Address: 0xa5D9C5547ea882f0047Fdc3669c6857590e8Fef8
+ABI: Provided in the project contracts/LeaderboardABI.json
+```
+The client uses connectWallet() to ensure the Monad Testnet chain is added and selected before play via ensureMonadChain().
 
-1. Build the project with `pnpm build` (optional but recommended before shipping).
-2. Use the Builder.io MCP integrations for hosting:
-   - [Connect to Netlify](#open-mcp-popover) for continuous deployment and serverless adapters.
-   - [Connect to Vercel](#open-mcp-popover) for zero-config React hosting.
-3. Provide environment variables/secrets through the hosting dashboard rather than committing them.
+getReadProvider() talks to /api/monad-rpc, which rotates through the configured Monad RPC endpoints (override with MONAD_RPC_URL) and falls back to a secondary provider if the primary endpoint rejects the call.
 
-For previewing without full deployment, share the in-app [Open Preview](#open-preview) link with collaborators.
-
-## Contributing
-
-1. Create a new branch for your feature.
-2. Run `pnpm typecheck` and `pnpm test` before opening a pull request.
-3. Ensure UI additions follow the component patterns in `client/components/ui` and favor composable, accessible primitives.
+Scores are summed across multiple submissions per address before rendering in the leaderboard page.
 
 ## License
 
-This project is currently unlicensed. Contact the maintainers if you intend to use or distribute the code.
+This project is licensed under the **MIT License**.  
+You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this software, under the conditions described in the [LICENSE](LICENSE) file.
+
