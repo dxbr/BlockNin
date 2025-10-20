@@ -81,6 +81,9 @@ export default function BlockNinja({
         const fragRadius = targetRadius / 3;
 
         const canvas = root.querySelector("#c") as HTMLCanvasElement;
+        
+        // Set custom cursor for gameplay
+        canvas.style.cursor = "crosshair";
 
         // Sound effects
         const sfx = {
