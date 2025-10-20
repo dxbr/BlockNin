@@ -15,10 +15,10 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Block Ninja"
+args = "Server"
 
 [[workflows.workflow]]
-name = "Block Ninja"
+name = "Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
@@ -32,10 +32,6 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 39451
-externalPort = 3000
 
 [[ports]]
 localPort = 44419

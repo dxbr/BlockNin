@@ -59,8 +59,10 @@ Block Ninja is a blockchain-based arcade slicing game built with React, TypeScri
 - Set up workflow for development server
 - Configured autoscale deployment
 - Changed default port in production server to 5000
-- Migrated RPC endpoint from `https://testnet-rpc.monad.xyz/` to `https://rpc.ankr.com/monad_testnet`
-- Updated blockchain.ts and megaeth-rpc.ts to use new Ankr RPC URL
+- Updated RPC endpoint to official Monad testnet RPC: `https://testnet-rpc.monad.xyz`
+- Added fallback RPC endpoints (dRPC and Ankr) for improved reliability
+- Installed all npm dependencies
+- Verified leaderboard functionality with blockchain integration
 
 ## Notes
 - The project originally used pnpm but works with npm in Replit
