@@ -9,6 +9,6 @@
 # Redirect all /api/* requests to serverless functions
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
