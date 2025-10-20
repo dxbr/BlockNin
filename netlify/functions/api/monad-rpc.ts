@@ -19,7 +19,9 @@ export async function handler(event: any) {
     return {
       statusCode: res.status,
       body: text,
-      headers: { "Content-Type": res.headers.get("content-type") || "application/json" },
+      headers: {
+        "Content-Type": res.headers.get("content-type") || "application/json",
+      },
     };
   } catch (err: any) {
     return {
