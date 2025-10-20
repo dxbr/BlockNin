@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
       clientPort: 443,
     },
     fs: {
-      allow: ["./", "./client", "./shared", "node_modules/vite/dist/client"],
+      allow: ["./client", "./shared"],
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
