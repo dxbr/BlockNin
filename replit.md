@@ -54,6 +54,7 @@ Block Ninja is a blockchain-based arcade slicing game built with React, TypeScri
 
 ## Recent Changes (October 20, 2025)
 - Updated Vite config to use port 5000 (Replit requirement)
+- Added `allowedHosts: true` to Vite config (critical for Replit proxy)
 - Configured HMR for Replit proxy environment
 - Set up workflow for development server
 - Configured autoscale deployment
