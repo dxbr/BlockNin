@@ -1,9 +1,8 @@
 import type { RequestHandler } from "express";
 
 const RPC_ENDPOINTS = [
-  process.env.MEGAETH_RPC_URL,
-  "https://carrot.megaeth.com/rpc",
-  "https://6342.rpc.thirdweb.com",
+  process.env.MONAD_RPC_URL,
+  "https://testnet-rpc.monad.xyz/",
 ].filter((url): url is string => typeof url === "string" && url.length > 0);
 
 export const handleMegaEthRpc: RequestHandler = async (req, res) => {
