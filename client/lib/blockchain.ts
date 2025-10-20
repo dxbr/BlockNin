@@ -293,7 +293,7 @@ export async function connectWallet(): Promise<{
 
 export function getReadProvider() {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  return new JsonRpcProvider(`${origin}/api/megaeth-rpc`);
+  return new JsonRpcProvider(`${origin}/api/monad-rpc`);
 }
 
 export function getContract<T extends any>(signerOrProvider: any) {
