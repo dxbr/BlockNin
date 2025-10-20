@@ -12,7 +12,10 @@ function normalizeMessage(err: any): string {
   if (code === 4001 || /user rejected|denied transaction/i.test(msg)) {
     return "Request rejected in wallet.";
   }
-  if (code === 4902 || /Unrecognized chain|wallet_addEthereumChain/i.test(msg)) {
+  if (
+    code === 4902 ||
+    /Unrecognized chain|wallet_addEthereumChain/i.test(msg)
+  ) {
     return "Network not found in wallet. Please approve adding Monad Testnet.";
   }
   if (/network|rpc|fetch|ECONN|Failed to fetch|timeout/i.test(msg)) {

@@ -50,7 +50,11 @@ export default function WalletConnect({ onConnected }: WalletConnectProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <Button onClick={handleConnect} disabled={connecting} className="px-6 py-6 text-base">
+      <Button
+        onClick={handleConnect}
+        disabled={connecting}
+        className="px-6 py-6 text-base"
+      >
         {connecting ? "Connecting…" : "Connect Wallet"}
       </Button>
       {error ? <div className="text-red-400 text-sm">{error}</div> : null}
