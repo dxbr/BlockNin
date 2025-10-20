@@ -1302,6 +1302,7 @@ export default function BlockNinja({
                       }
                       targets.splice(i, 1);
                       returnTarget(target);
+                      continue targetLoop;
                     } else {
                       sparkBurst(hitX, hitY, 8, sparkSpeed);
                       glueShedSparks(target);
