@@ -3,6 +3,7 @@ import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { connectWallet } from "@/lib/blockchain";
 import { toast } from "sonner";
+import { toFriendlyError } from "@/lib/error-handling";
 
 export interface WalletConnectProps {
   onConnected(address: string): void;
@@ -24,7 +25,7 @@ export default function WalletConnect({ onConnected }: WalletConnectProps) {
       onConnected(address);
     } catch (e: any) {
       console.error("[wallet] connect error", e);
-      const msg = e?.message || "Failed to connect";
+      const msg = toFriendlyError(e);
       setError(msg);
       toast.error("Connection failed", { description: msg });
     } finally {
@@ -49,7 +50,11 @@ export default function WalletConnect({ onConnected }: WalletConnectProps) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <Button onClick={handleConnect} disabled={connecting} className="px-6 py-6 text-base">
+      <Button
+        onClick={handleConnect}
+        disabled={connecting}
+        className="px-6 py-6 text-base"
+      >
         {connecting ? "Connecting…" : "Connect Wallet"}
       </Button>
       {error ? <div className="text-red-400 text-sm">{error}</div> : null}

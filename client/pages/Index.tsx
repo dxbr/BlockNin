@@ -11,6 +11,7 @@ import {
   setCachedWalletAddress,
 } from "@/lib/blockchain";
 import { toast } from "sonner";
+import { toFriendlyError } from "@/lib/error-handling";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -111,7 +112,7 @@ export default function Index() {
       } else {
         console.error("[score] submit failed", e);
         toast.error("Submit failed", {
-          description: message || "Failed to submit score",
+          description: toFriendlyError(e),
         });
       }
     } finally {
@@ -142,6 +143,7 @@ export default function Index() {
         onAutoStart={() => {}}
         onRequireWallet={() => toast("Connect your wallet to play")}
         onOpenLeaderboard={() => navigate("/leaderboard")}
+        address={address}
       />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>

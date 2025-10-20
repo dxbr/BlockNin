@@ -1,17 +1,17 @@
 import { BrowserProvider, Contract, JsonRpcProvider } from "ethers";
 
 export const MEGAETH = {
-  chainId: 6342,
-  chainIdHex: "0x18C6",
-  name: "MegaETH Testnet",
-  rpcUrl: "https://carrot.megaeth.com/rpc",
-  fallbackRpcUrls: ["https://6342.rpc.thirdweb.com"],
-  currency: { name: "MegaETH", symbol: "MEGA", decimals: 18 },
-  explorer: "https://www.megaexplorer.xyz/",
+  chainId: 10143,
+  chainIdHex: "0x279F",
+  name: "Monad Testnet",
+  rpcUrl: "https://testnet-rpc.monad.xyz/",
+  fallbackRpcUrls: [],
+  currency: { name: "Monad", symbol: "MON", decimals: 18 },
+  explorer: "https://testnet.monadexplorer.com/",
 } as const;
 
 export const LEADERBOARD_ADDRESS =
-  "0x1C38845ee1240D83B2bec9D5655aaB543fa74b77" as const;
+  "0xa5D9C5547ea882f0047Fdc3669c6857590e8Fef8" as const;
 
 export const LEADERBOARD_ABI = [
   {
