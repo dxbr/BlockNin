@@ -23,5 +23,8 @@ export function createServer() {
   // RPC proxy (avoids browser CORS limits against MegaETH RPC)
   app.post("/api/megaeth-rpc", handleMegaEthRpc);
 
+  // Legacy: also expose /api/monad-rpc so deployed Netlify function and frontend can use a stable path
+  app.post("/api/monad-rpc", handleMegaEthRpc);
+
   return app;
 }
