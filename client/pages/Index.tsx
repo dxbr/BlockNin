@@ -142,6 +142,7 @@ export default function Index() {
         onAutoStart={() => {}}
         onRequireWallet={() => toast("Connect your wallet to play")}
         onOpenLeaderboard={() => navigate("/leaderboard")}
+        address={address}
       />
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
