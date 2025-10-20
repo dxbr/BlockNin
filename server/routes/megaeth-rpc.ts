@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 
 const RPC_ENDPOINTS = [
   process.env.MONAD_RPC_URL,
+  "https://rpc.ankr.com/monad_testnet",
   "https://testnet-rpc.monad.xyz/",
 ].filter((url): url is string => typeof url === "string" && url.length > 0);
 
