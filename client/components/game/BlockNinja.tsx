@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
+import { toFriendlyError } from "@/lib/error-handling";
 
 export interface BlockNinjaProps {
   canPlay: boolean;
@@ -30,7 +32,7 @@ export default function BlockNinja({
 
     // Game code from original, adapted to scope queries within root.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (function initGame() {
+    (function initGame() { try {
       // Timing multiplier for entire game engine.
       console.log("BlockNinja script loaded — debug build");
       let gameSpeed = 1;
@@ -1726,6 +1728,10 @@ if (target.y > centerY + targetHitRadius * 2) {
       };
 
       (root as any).__blockNinjaApi = external;
+    } catch (err) {
+      const msg = toFriendlyError(err);
+      toast.error("Game error", { description: msg });
+    }
     })();
 
     return () => {
