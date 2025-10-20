@@ -13,6 +13,15 @@ export const handleMegaEthRpc: RequestHandler = async (req, res) => {
     | null = null;
 
   for (const endpoint of RPC_ENDPOINTS) {
+    // Log incoming RPC method to help debug unsupported method errors
+    try {
+      const parsed = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      /* eslint-disable no-console */
+      console.debug('[megaeth-rpc] forwarding method:', parsed?.method, 'to', endpoint);
+      /* eslint-enable no-console */
+    } catch (_err) {
+      /* ignore parse errors */
+    }
     try {
       const upstream = await fetch(endpoint, {
         method: "POST",
@@ -20,6 +29,10 @@ export const handleMegaEthRpc: RequestHandler = async (req, res) => {
         body: JSON.stringify(req.body),
       });
       const text = await upstream.text();
+      // Log upstream non-OK responses for observability
+      if (!upstream.ok) {
+        console.warn('[megaeth-rpc] upstream error', { endpoint, status: upstream.status, body: text });
+      }
       if (upstream.ok) {
         res.status(upstream.status);
         res.setHeader(
