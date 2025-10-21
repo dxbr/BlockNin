@@ -24,27 +24,40 @@ export default function Leaderboard() {
       const provider = getReadProvider();
       const contract = getContract(provider);
       const allScores = await contract.getTopScores(100);
-      
+
       // Aggregate scores by player - keep best score for each player
       const playerMap = new Map<string, ScoreEntry>();
       for (const entry of allScores) {
         const playerLower = entry.player.toLowerCase();
         const existing = playerMap.get(playerLower);
-        
+
         if (!existing || entry.score > existing.score) {
           playerMap.set(playerLower, entry);
         }
       }
-      
+
       // Convert to array and sort by score descending
       const uniquePlayers = Array.from(playerMap.values())
         .sort((a, b) => Number(b.score - a.score))
         .slice(0, 10); // Top 10 only
-      
+
       setScores(uniquePlayers);
     } catch (err: any) {
       console.error("Error fetching leaderboard:", err);
-      setError(err?.message || "Failed to load leaderboard");
+
+      // Provide user-friendly error message
+      let errorMessage = "Failed to load leaderboard";
+      if (
+        err?.message?.includes("Parse error") ||
+        err?.message?.includes("parse")
+      ) {
+        errorMessage =
+          "Unable to connect to the blockchain. Please check your connection and try again.";
+      } else if (err?.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -73,7 +86,9 @@ export default function Leaderboard() {
           <h1 className="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
             Leaderboard
           </h1>
-          <p className="text-white/70 text-sm">Top 10 Players on Monad Testnet</p>
+          <p className="text-white/70 text-sm">
+            Top 10 Players on Monad Testnet
+          </p>
         </div>
 
         {loading && (
@@ -97,7 +112,9 @@ export default function Leaderboard() {
 
         {!loading && !error && scores.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-white/70 text-lg">No scores yet. Be the first to play!</p>
+            <p className="text-white/70 text-lg">
+              No scores yet. Be the first to play!
+            </p>
           </div>
         )}
 
