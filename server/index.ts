@@ -2,15 +2,13 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleMegaEthRpc } from "./routes/megaeth-rpc";
 
 export function createServer() {
   const app = express();
 
   // Middleware
   app.use(cors());
-  app.use(express.json({ limit: "10mb" }));
-  app.use(express.text({ type: "application/json", limit: "10mb" }));
+  app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
   // Example API routes
@@ -20,9 +18,6 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
-
-  // RPC proxy (avoids browser CORS limits against MegaETH RPC)
-  app.post("/api/megaeth-rpc", handleMegaEthRpc);
 
   return app;
 }
