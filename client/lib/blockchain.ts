@@ -295,22 +295,8 @@ export async function connectWallet(): Promise<{
 }
 
 export function getReadProvider() {
-  // On localhost development, use the local proxy
-  if (typeof window !== "undefined" && window.location.hostname === "localhost") {
-    const origin = window.location.origin;
-    return new JsonRpcProvider(`${origin}/api/megaeth-rpc`);
-  }
-
-  // On production (Netlify), use direct RPC endpoint with fallbacks
-  // Create a multi-fallback provider that tries multiple endpoints
-  const urls = MEGAETH_RPC_URLS;
-  if (urls.length === 1) {
-    return new JsonRpcProvider(urls[0]);
-  }
-
-  // Use the first RPC URL as primary
-  // ethers.js JsonRpcProvider handles CORS for public endpoints
-  return new JsonRpcProvider(urls[0]);
+  // Use direct RPC endpoint (CORS is handled by Monad testnet)
+  return new JsonRpcProvider(MEGAETH.rpcUrl);
 }
 
 export function getContract<T extends any>(signerOrProvider: any) {
