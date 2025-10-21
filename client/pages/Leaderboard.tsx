@@ -47,8 +47,12 @@ export default function Leaderboard() {
 
       // Provide user-friendly error message
       let errorMessage = "Failed to load leaderboard";
-      if (err?.message?.includes("Parse error") || err?.message?.includes("parse")) {
-        errorMessage = "Unable to connect to the blockchain. Please check your connection and try again.";
+      if (
+        err?.message?.includes("Parse error") ||
+        err?.message?.includes("parse")
+      ) {
+        errorMessage =
+          "Unable to connect to the blockchain. Please check your connection and try again.";
       } else if (err?.message) {
         errorMessage = err.message;
       }
@@ -82,7 +86,9 @@ export default function Leaderboard() {
           <h1 className="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
             Leaderboard
           </h1>
-          <p className="text-white/70 text-sm">Top 10 Players on Monad Testnet</p>
+          <p className="text-white/70 text-sm">
+            Top 10 Players on Monad Testnet
+          </p>
         </div>
 
         {loading && (
@@ -106,7 +112,9 @@ export default function Leaderboard() {
 
         {!loading && !error && scores.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-white/70 text-lg">No scores yet. Be the first to play!</p>
+            <p className="text-white/70 text-lg">
+              No scores yet. Be the first to play!
+            </p>
           </div>
         )}
 
