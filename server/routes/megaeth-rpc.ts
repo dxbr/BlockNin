@@ -8,6 +8,16 @@ const RPC_ENDPOINTS = [
 ].filter((url): url is string => typeof url === "string" && url.length > 0);
 
 export const handleMegaEthRpc: RequestHandler = async (req, res) => {
+  // Ensure we have a request body to forward
+  const body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
+
+  if (!body) {
+    return res.status(400).json({
+      error: "bad_request",
+      message: "Request body is required",
+    });
+  }
+
   let lastError:
     | { status: number; body: string; endpoint: string }
     | { status: number; body: string; endpoint?: string }
@@ -18,19 +28,19 @@ export const handleMegaEthRpc: RequestHandler = async (req, res) => {
       const upstream = await fetch(endpoint, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(req.body),
+        body: body,
       });
-      const text = await upstream.text();
-      if (upstream.ok) {
-        res.status(upstream.status);
-        res.setHeader(
-          "content-type",
-          upstream.headers.get("content-type") || "application/json",
-        );
-        res.send(text);
-        return;
-      }
-      lastError = { status: upstream.status, body: text, endpoint };
+      const responseText = await upstream.text();
+
+      // Forward the response as-is, regardless of HTTP status
+      // RPC servers return 200 OK even for JSON-RPC errors
+      res.status(upstream.status);
+      res.setHeader(
+        "content-type",
+        upstream.headers.get("content-type") || "application/json",
+      );
+      res.send(responseText);
+      return;
     } catch (e: any) {
       lastError = {
         status: 502,
